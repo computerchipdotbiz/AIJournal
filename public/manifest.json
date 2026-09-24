@@ -1,0 +1,16 @@
+{
+  "name": "Rosebud AI Journal",
+  "short_name": "Rosebud",
+  "description": "An interactive AI-powered journal for emotional clarity and growth",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fcfbf9",
+  "theme_color": "#5b7065",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
