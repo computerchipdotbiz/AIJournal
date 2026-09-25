@@ -29,8 +29,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [manualEmail, setManualEmail] = useState('');
-  const [showManualLogin, setShowManualLogin] = useState(false);
+  const [ownerPassword, setOwnerPassword] = useState('');
+  const [showPasswordLogin, setShowPasswordLogin] = useState(false);
   const googleBtnRef = useRef<HTMLDivElement>(null);
 
   // Initialize Google Identity Services when script loads and client ID exists
@@ -80,9 +80,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
   }, [googleClientId, onLoginSuccess]);
 
-  const handleManualLogin = async (e: React.FormEvent) => {
+  const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!manualEmail.trim()) return;
+    if (!ownerPassword) return;
 
     setLoading(true);
     setError(null);
@@ -91,12 +91,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       const res = await fetch('/api/auth/google', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: manualEmail.trim() }),
+        body: JSON.stringify({ password: ownerPassword }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Authentication failed');
+        setError(data.error || 'Incorrect owner password');
       } else {
         onLoginSuccess(data.email);
       }
@@ -182,52 +182,52 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Direct Authorized Login */}
             <div>
-              {!showManualLogin ? (
+              {!showPasswordLogin ? (
                 <button
                   type="button"
-                  onClick={() => setShowManualLogin(true)}
+                  onClick={() => setShowPasswordLogin(true)}
                   className="w-full py-3 px-4 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-2xl font-medium text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.99]"
                 >
                   <Lock className="w-4 h-4" />
-                  <span>Sign In as Owner ({allowedEmail})</span>
+                  <span>Sign In with Owner Password</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               ) : (
-                <form onSubmit={handleManualLogin} className="space-y-3 pt-1">
+                <form onSubmit={handlePasswordLogin} className="space-y-3 pt-1">
                   <div>
                     <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#64748b] mb-1">
-                      Confirm Your Authorized Email
+                      Owner Secret Password
                     </label>
                     <input
-                      type="email"
+                      type="password"
                       autoFocus
-                      value={manualEmail}
-                      onChange={(e) => setManualEmail(e.target.value)}
-                      placeholder="everythingfunny@gmail.com"
+                      value={ownerPassword}
+                      onChange={(e) => setOwnerPassword(e.target.value)}
+                      placeholder="Enter secret owner password..."
                       className="w-full px-3.5 py-2.5 rounded-2xl border border-[#ebe7df] focus:border-[#5b7065] focus:outline-none focus:ring-2 focus:ring-[#5b7065]/20 text-xs font-mono"
                     />
                   </div>
                   <div className="flex gap-2">
                     <button
                       type="submit"
-                      disabled={loading || !manualEmail.trim()}
+                      disabled={loading || !ownerPassword}
                       className="flex-1 py-2.5 bg-[#5b7065] hover:bg-[#485b51] disabled:opacity-50 text-white rounded-2xl font-medium text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all"
                     >
                       {loading ? (
                         <>
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>Verifying whitelist...</span>
+                          <span>Authenticating...</span>
                         </>
                       ) : (
                         <>
                           <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Authenticate & Enter</span>
+                          <span>Unlock Journal</span>
                         </>
                       )}
                     </button>
                     <button
                       type="button"
-                      onClick={() => setShowManualLogin(false)}
+                      onClick={() => setShowPasswordLogin(false)}
                       className="px-3 py-2 text-xs text-[#64748b] hover:text-[#1f2421]"
                     >
                       Back
