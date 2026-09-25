@@ -33,16 +33,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [showPasswordLogin, setShowPasswordLogin] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const googleBtnRef = useRef<HTMLDivElement>(null);
+  const renderedClientIdRef = useRef<string>('');
+
+  const activeClientId = (
+    googleClientId ||
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+    ''
+  ).trim();
 
   // Initialize Google Identity Services when script loads and client ID exists
   useEffect(() => {
     const initGoogle = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const win = window as any;
-      if (googleClientId && win.google?.accounts?.id && googleBtnRef.current) {
+      if (activeClientId && win.google?.accounts?.id && googleBtnRef.current) {
         try {
           win.google.accounts.id.initialize({
-            client_id: googleClientId,
+            client_id: activeClientId,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             callback: async (response: any) => {
               if (response.credential) {
@@ -69,7 +76,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             },
           });
 
-          if (googleBtnRef.current.children.length === 0) {
+          if (renderedClientIdRef.current !== activeClientId || googleBtnRef.current.children.length === 0) {
+            googleBtnRef.current.innerHTML = '';
             win.google.accounts.id.renderButton(googleBtnRef.current, {
               theme: 'outline',
               size: 'large',
@@ -77,6 +85,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               shape: 'pill',
               width: 280,
             });
+            renderedClientIdRef.current = activeClientId;
           }
         } catch (err) {
           console.error('Google Sign In Init Error:', err);
@@ -87,7 +96,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     initGoogle();
     const interval = setInterval(initGoogle, 400);
     return () => clearInterval(interval);
-  }, [googleClientId, scriptLoaded, onLoginSuccess]);
+  }, [activeClientId, scriptLoaded, onLoginSuccess]);
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
