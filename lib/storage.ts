@@ -1,9 +1,54 @@
-import { JournalEntry, WeeklyInsight, UserSettings } from './types';
+import { JournalEntry, WeeklyInsight, UserSettings, JournalMessage } from './types';
 import { getSupabaseClient, isSupabaseConfigured } from './supabase/client';
 
 const ENTRIES_KEY = 'chipmind_journal_entries';
 const INSIGHTS_KEY = 'chipmind_journal_insights';
 const SETTINGS_KEY = 'chipmind_journal_settings';
+const DRAFT_KEY = 'chipmind_active_draft';
+
+export interface JournalDraft {
+  promptId: string | null;
+  promptTitle?: string;
+  messages: JournalMessage[];
+  inputText: string;
+  updatedAt: string;
+}
+
+export const getStoredDraft = (): JournalDraft | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+export const saveStoredDraft = (draft: Partial<JournalDraft>): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    const current = getStoredDraft() || {
+      promptId: null,
+      promptTitle: '',
+      messages: [],
+      inputText: '',
+      updatedAt: new Date().toISOString()
+    };
+    const updated = { ...current, ...draft, updatedAt: new Date().toISOString() };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(updated));
+  } catch (err) {
+    console.warn('Failed to save draft:', err);
+  }
+};
+
+export const clearStoredDraft = (): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch (err) {
+    console.warn('Failed to clear draft:', err);
+  }
+};
 
 export const DEFAULT_SETTINGS: UserSettings = {
   userName: 'Friend',
@@ -93,6 +138,11 @@ export const saveEntry = async (entry: JournalEntry): Promise<void> => {
       updated = [entry, ...existing];
     }
     localStorage.setItem(ENTRIES_KEY, JSON.stringify(updated));
+    localStorage.setItem('rosebud_journal_entries', JSON.stringify(updated));
+    clearStoredDraft();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('chipmind_storage_update'));
+    }
   } catch (err) {
     console.error('Failed to save entry locally:', err);
   }
@@ -130,6 +180,10 @@ export const deleteEntry = async (id: string): Promise<void> => {
     const existing = await fetchEntries();
     const filtered = existing.filter(e => e.id !== id);
     localStorage.setItem(ENTRIES_KEY, JSON.stringify(filtered));
+    localStorage.setItem('rosebud_journal_entries', JSON.stringify(filtered));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('chipmind_storage_update'));
+    }
   } catch (err) {
     console.error('Failed to delete local entry:', err);
   }

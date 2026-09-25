@@ -81,9 +81,16 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
 
       {/* AI Summary Highlight */}
       {entry.summary && (
-        <div className="p-3.5 rounded-2xl bg-[#fcfbf9] border border-[#ebe7df]/70 mb-3 text-xs sm:text-sm text-[#334155] leading-relaxed flex items-start gap-2.5">
+        <div className="p-3 rounded-2xl bg-[#fcfbf9] border border-[#ebe7df]/70 mb-3 text-xs sm:text-sm text-[#334155] leading-relaxed flex items-start gap-2.5">
           <Sparkles className="w-4 h-4 text-[#5b7065] shrink-0 mt-0.5" />
           <div>{entry.summary}</div>
+        </div>
+      )}
+
+      {/* User Journal Content */}
+      {entry.content && (
+        <div className="text-xs sm:text-sm text-[#1f2421] leading-relaxed whitespace-pre-wrap mb-3 p-3.5 rounded-2xl bg-[#fcfbf9]/60 border border-[#ebe7df]/60">
+          {entry.content}
         </div>
       )}
 

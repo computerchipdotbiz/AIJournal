@@ -10,7 +10,9 @@ import {
   Calendar,
   MessageSquare,
   TrendingUp,
-  Key
+  Key,
+  BookmarkCheck,
+  X
 } from 'lucide-react';
 import { JournalEntry, WeeklyInsight, UserSettings } from '@/lib/types';
 import {
@@ -21,6 +23,9 @@ import {
   saveWeeklyInsight,
   getStoredSettings,
   saveStoredSettings,
+  getStoredDraft,
+  clearStoredDraft,
+  JournalDraft,
 } from '@/lib/storage';
 import { Navbar } from '@/components/Navbar';
 import { InteractiveJournal } from '@/components/InteractiveJournal';
@@ -43,6 +48,7 @@ export default function Home() {
   const [isLocked, setIsLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasServerKey, setHasServerKey] = useState(false);
+  const [activeDraft, setActiveDraft] = useState<JournalDraft | null>(null);
 
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -90,10 +96,33 @@ export default function Home() {
       const loadedInsights = await fetchWeeklyInsights();
       setInsights(loadedInsights);
 
+      const currentDraft = getStoredDraft();
+      if (currentDraft && (currentDraft.messages.length > 0 || currentDraft.inputText.trim())) {
+        setActiveDraft(currentDraft);
+      }
+
       setIsLoading(false);
     };
 
     init();
+
+    // Listen for storage events across components and tabs
+    const handleStorageUpdate = async () => {
+      const refreshedEntries = await fetchEntries();
+      setEntries(refreshedEntries);
+      const draft = getStoredDraft();
+      setActiveDraft(
+        draft && (draft.messages.length > 0 || draft.inputText.trim()) ? draft : null
+      );
+    };
+
+    window.addEventListener('chipmind_storage_update', handleStorageUpdate);
+    window.addEventListener('storage', handleStorageUpdate);
+
+    return () => {
+      window.removeEventListener('chipmind_storage_update', handleStorageUpdate);
+      window.removeEventListener('storage', handleStorageUpdate);
+    };
   }, []);
 
   const handleSaveEntry = async (entry: JournalEntry) => {
@@ -308,6 +337,45 @@ export default function Home() {
                 >
                   Configure in Settings
                 </button>
+              </div>
+            )}
+
+            {/* Draft Recovery Alert */}
+            {activeDraft && (
+              <div className="p-4 rounded-3xl bg-[#e8edea] border border-[#5b7065]/40 text-[#2c4035] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs animate-fadeIn">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-2xl bg-white text-[#5b7065] shadow-2xs">
+                    <BookmarkCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-semibold text-[#1f2421]">
+                      You have an unsaved reflection draft
+                    </h4>
+                    <p className="text-[11px] text-[#475569]">
+                      {activeDraft.inputText
+                        ? `"${activeDraft.inputText.slice(0, 65)}..."`
+                        : 'Unfinished thoughts from your previous session.'}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => setActiveTab('new')}
+                    className="px-4 py-1.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs font-semibold shadow-xs transition-colors"
+                  >
+                    Resume Writing
+                  </button>
+                  <button
+                    onClick={() => {
+                      clearStoredDraft();
+                      setActiveDraft(null);
+                    }}
+                    className="p-1.5 text-[#64748b] hover:text-red-600 rounded-full transition-colors"
+                    title="Discard Draft"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             )}
 

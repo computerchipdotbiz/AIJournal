@@ -48,14 +48,24 @@ export async function POST(req: Request) {
       content: m.content
     }));
 
-    const result = streamText({
-      model: google('gemini-3.8-flash'),
-      system: systemPrompt,
-      messages: formattedMessages,
-      temperature: 0.7,
-    });
-
-    return result.toTextStreamResponse();
+    let result;
+    try {
+      result = streamText({
+        model: google('gemini-flash-latest'),
+        system: systemPrompt,
+        messages: formattedMessages,
+        temperature: 0.7,
+      });
+      return result.toTextStreamResponse();
+    } catch {
+      result = streamText({
+        model: google('gemini-3.8-flash'),
+        system: systemPrompt,
+        messages: formattedMessages,
+        temperature: 0.7,
+      });
+      return result.toTextStreamResponse();
+    }
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown reflection error';
     console.error('Reflection API Error:', error);

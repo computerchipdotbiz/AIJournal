@@ -44,12 +44,24 @@ export async function POST(req: Request) {
       .map(e => `--- Date: ${new Date(e.date).toLocaleDateString()} | Title: ${e.title} | Mood: ${e.moodScore}/10 ---\nSummary: ${e.summary}\nEmotions: ${e.emotions.join(', ')}\nContent: ${e.content}`)
       .join('\n\n');
 
-    const { text } = await generateText({
-      model: google('gemini-3.8-flash'),
-      system: WEEKLY_INSIGHT_SYSTEM_PROMPT,
-      prompt: `Here are the journal entries for this week:\n\n${formattedEntries}\n\nPlease generate the weekly insight synthesis JSON:`,
-      temperature: 0.4,
-    });
+    let text = '';
+    try {
+      const res = await generateText({
+        model: google('gemini-flash-latest'),
+        system: WEEKLY_INSIGHT_SYSTEM_PROMPT,
+        prompt: `Here are the journal entries for this week:\n\n${formattedEntries}\n\nPlease generate the weekly insight synthesis JSON:`,
+        temperature: 0.4,
+      });
+      text = res.text;
+    } catch {
+      const res2 = await generateText({
+        model: google('gemini-3.8-flash'),
+        system: WEEKLY_INSIGHT_SYSTEM_PROMPT,
+        prompt: `Here are the journal entries for this week:\n\n${formattedEntries}\n\nPlease generate the weekly insight synthesis JSON:`,
+        temperature: 0.4,
+      });
+      text = res2.text;
+    }
 
     let cleaned = text.trim();
     if (cleaned.startsWith('```json')) {

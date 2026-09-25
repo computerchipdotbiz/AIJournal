@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import confetti from 'canvas-confetti';
 import {
   Send,
@@ -13,11 +13,15 @@ import {
   Moon,
   Feather,
   Compass,
-  BookOpen
+  BookOpen,
+  BookmarkCheck,
+  AlertCircle,
+  X
 } from 'lucide-react';
 import { JournalMessage, JournalEntry, JournalPrompt } from '@/lib/types';
 import { JOURNAL_PROMPTS } from '@/lib/prompts';
 import { VoiceRecorder } from './VoiceRecorder';
+import { getStoredDraft, saveStoredDraft, clearStoredDraft } from '@/lib/storage';
 
 interface InteractiveJournalProps {
   apiKey: string;
@@ -39,7 +43,10 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
   const [inputText, setInputText] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [draftRestoredBanner, setDraftRestoredBanner] = useState(false);
 
   // Post-synthesis confirmation stage
   const [synthesizedResult, setSynthesizedResult] = useState<{
@@ -53,6 +60,36 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Restore draft if one exists on mount
+  useEffect(() => {
+    const draft = getStoredDraft();
+    if (draft && (draft.messages.length > 0 || draft.inputText.trim())) {
+      if (draft.promptId) {
+        const found = JOURNAL_PROMPTS.find((p) => p.id === draft.promptId);
+        if (found) setSelectedPrompt(found);
+      } else {
+        setSelectedPrompt(JOURNAL_PROMPTS.find((p) => p.id === 'freeform') || JOURNAL_PROMPTS[0]);
+      }
+      setMessages(draft.messages || []);
+      setInputText(draft.inputText || '');
+      setDraftRestoredBanner(true);
+    }
+  }, []);
+
+  // Auto-save draft on changes (debounced)
+  useEffect(() => {
+    if (!selectedPrompt) return;
+    const hasData = messages.length > 0 || inputText.trim().length > 0;
+    if (hasData) {
+      saveStoredDraft({
+        promptId: selectedPrompt.id,
+        promptTitle: selectedPrompt.title,
+        messages,
+        inputText,
+      });
+    }
+  }, [selectedPrompt, messages, inputText]);
 
   // Auto-scroll as messages or tokens arrive
   useEffect(() => {
@@ -151,7 +188,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
       }
     } catch (err: unknown) {
       console.error('Error reflecting:', err);
-      setApiError('Network error connecting to reflection service.');
+      setApiError('Network or reflection service error. Your writing is still safely saved.');
     } finally {
       setIsStreaming(false);
     }
@@ -161,8 +198,90 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
     setInputText((prev) => (prev ? `${prev} ${text}` : text));
   };
 
+  // Direct save without requiring AI synthesis
+  const handleDirectSave = useCallback(async () => {
+    if (isSaving) return;
+
+    let currentMessages = [...messages];
+    if (inputText.trim()) {
+      const pendingMsg: JournalMessage = {
+        id: `user-${Date.now()}`,
+        sender: 'user',
+        content: inputText.trim(),
+        timestamp: new Date().toISOString(),
+      };
+      currentMessages.push(pendingMsg);
+      setMessages(currentMessages);
+      setInputText('');
+    }
+
+    const userWritings = currentMessages
+      .filter((m) => m.sender === 'user')
+      .map((m) => m.content.trim())
+      .filter(Boolean);
+
+    if (userWritings.length === 0) {
+      alert('Please write your thoughts before saving to your journal.');
+      return;
+    }
+
+    setIsSaving(true);
+    const fullContent = userWritings.join('\n\n');
+    const firstLine = userWritings[0].split(/[.!?\n]/)[0]?.trim() || '';
+    const words = firstLine.split(/\s+/).slice(0, 6).join(' ');
+    const autoTitle = words ? `${words}...` : `${selectedPrompt?.title || 'Daily'} Reflection`;
+    const autoSummary = userWritings[0].length > 160 ? `${userWritings[0].slice(0, 157)}...` : userWritings[0];
+
+    const entry: JournalEntry = {
+      id: `entry-${Date.now()}`,
+      title: autoTitle,
+      date: new Date().toISOString(),
+      content: fullContent,
+      summary: autoSummary,
+      moodScore: 7,
+      emotions: ['reflective', 'intentional'],
+      tags: [selectedPrompt?.category || 'daily', 'reflection'],
+      actionItems: [],
+      conversation: currentMessages,
+      promptUsed: selectedPrompt?.title || 'Open Reflection',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Confetti celebration
+    confetti({
+      particleCount: 50,
+      spread: 60,
+      origin: { y: 0.7 },
+      colors: ['#5b7065', '#e09f3e', '#7d9d8c'],
+    });
+
+    clearStoredDraft();
+    await onSaveEntry(entry);
+    setIsSaving(false);
+  }, [isSaving, messages, inputText, selectedPrompt, onSaveEntry]);
+
+  // AI-Assisted Synthesis & Review Flow
   const handleSynthesizeAndWrapUp = async () => {
-    if (messages.length < 2) return;
+    let currentMessages = [...messages];
+    if (inputText.trim()) {
+      const pendingMsg: JournalMessage = {
+        id: `user-${Date.now()}`,
+        sender: 'user',
+        content: inputText.trim(),
+        timestamp: new Date().toISOString(),
+      };
+      currentMessages.push(pendingMsg);
+      setMessages(currentMessages);
+      setInputText('');
+    }
+
+    const userWritings = currentMessages.filter((m) => m.sender === 'user');
+    if (userWritings.length === 0) {
+      alert('Please write a thought before summarizing.');
+      return;
+    }
+
     setIsSynthesizing(true);
     setApiError(null);
 
@@ -171,45 +290,48 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          conversation: messages,
+          conversation: currentMessages,
           apiKey: apiKey || undefined,
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to synthesize entry');
-      }
-
       const data = await response.json();
       setSynthesizedResult({
         title: data.title || 'Daily Reflection',
-        summary: data.summary || '',
-        moodScore: data.moodScore || 6,
+        summary: data.summary || userWritings[0].content.slice(0, 150),
+        moodScore: data.moodScore || 7,
         emotions: data.emotions || ['reflective'],
         tags: data.tags || ['daily'],
         actionItems: data.actionItems || [],
       });
 
-      // Confetti celebration
       confetti({
-        particleCount: 50,
-        spread: 60,
+        particleCount: 40,
+        spread: 50,
         origin: { y: 0.7 },
         colors: ['#5b7065', '#e09f3e', '#7d9d8c'],
       });
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Error summarizing entry';
-      setApiError(message);
+      console.warn('Synthesis error, falling back to instant review:', err);
+      // Fallback result so saving is NEVER blocked
+      const userText = userWritings.map((m) => m.content).join(' ');
+      setSynthesizedResult({
+        title: `${selectedPrompt?.title || 'Daily'} Reflection`,
+        summary: userText.length > 150 ? `${userText.slice(0, 147)}...` : userText,
+        moodScore: 7,
+        emotions: ['reflective'],
+        tags: ['reflection'],
+        actionItems: [],
+      });
     } finally {
       setIsSynthesizing(false);
     }
   };
 
   const handleFinalSave = async () => {
-    if (!synthesizedResult) return;
+    if (!synthesizedResult || isSaving) return;
+    setIsSaving(true);
 
-    // Concatenate all user writings
     const fullContent = messages
       .filter((m) => m.sender === 'user')
       .map((m) => m.content)
@@ -231,13 +353,27 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
       updatedAt: new Date().toISOString(),
     };
 
+    clearStoredDraft();
     await onSaveEntry(entry);
+    setIsSaving(false);
   };
+
+  const handleBackNavigation = () => {
+    const hasContent = inputText.trim().length > 0 || messages.some((m) => m.sender === 'user');
+    if (hasContent) {
+      setShowExitConfirm(true);
+    } else {
+      clearStoredDraft();
+      onCancel();
+    }
+  };
+
+  const hasUserWritten = inputText.trim().length > 0 || messages.some((m) => m.sender === 'user');
 
   // 1. Initial Prompt Selection Screen
   if (!selectedPrompt) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 py-8 animate-fadeIn">
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={onCancel}
@@ -255,8 +391,40 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
           </div>
         </div>
 
+        {/* Quick Freeform Card */}
+        <div
+          onClick={() =>
+            handleSelectPrompt(
+              JOURNAL_PROMPTS.find((p) => p.id === 'freeform') || JOURNAL_PROMPTS[0]
+            )
+          }
+          className="mb-4 p-5 rounded-3xl bg-gradient-to-r from-[#e8edea] to-[#f5f2eb] border border-[#5b7065]/30 hover:border-[#5b7065] cursor-pointer transition-all shadow-xs hover:shadow-sm group flex items-center justify-between"
+        >
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-white text-[#5b7065] shadow-xs group-hover:scale-105 transition-transform">
+              <Feather className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-serif font-semibold text-[#1f2421] text-base group-hover:text-[#5b7065] transition-colors">
+                  Open Journal / Free Write
+                </h3>
+                <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-[#5b7065] text-white">
+                  Fastest
+                </span>
+              </div>
+              <p className="text-xs text-[#475569] mt-0.5">
+                Type or dictate your thoughts freely. Save anytime with 1 click.
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-semibold text-[#5b7065] hidden sm:inline-block">
+            Start writing &rarr;
+          </span>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          {JOURNAL_PROMPTS.map((prompt) => {
+          {JOURNAL_PROMPTS.filter((p) => p.id !== 'freeform').map((prompt) => {
             const getIcon = () => {
               switch (prompt.icon) {
                 case 'Sun':
@@ -278,7 +446,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               <button
                 key={prompt.id}
                 onClick={() => handleSelectPrompt(prompt)}
-                className="flex items-start gap-3.5 p-4 rounded-3xl bg-white border border-[#ebe7df] hover:border-[#5b7065]/40 hover:shadow-sm text-left transition-all group"
+                className="flex items-start gap-3.5 p-4 rounded-3xl bg-white border border-[#ebe7df] hover:border-[#5b7065]/40 hover:shadow-xs text-left transition-all group"
               >
                 <div className="p-2.5 rounded-2xl bg-[#f5f2eb] group-hover:scale-105 transition-transform">
                   {getIcon()}
@@ -306,7 +474,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#ebe7df] shadow-sm">
           <div className="flex items-center gap-2 text-[#5b7065] mb-2 font-medium text-xs uppercase tracking-wider">
             <CheckCircle2 className="w-4 h-4" />
-            <span>Entry Synthesized</span>
+            <span>Ready to Save</span>
           </div>
 
           <input
@@ -315,6 +483,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
             onChange={(e) =>
               setSynthesizedResult({ ...synthesizedResult, title: e.target.value })
             }
+            placeholder="Entry Title"
             className="w-full text-2xl font-serif font-semibold text-[#1f2421] border-b border-transparent hover:border-[#ebe7df] focus:border-[#5b7065] focus:outline-none py-1 mb-4"
           />
 
@@ -338,7 +507,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
                 Mood Score
               </span>
-              <span className="text-sm font-semibold text-[#2c4035] px-2 py-0.5 rounded-full bg-white border border-[#ebe7df]">
+              <span className="text-sm font-semibold text-[#2c4035] px-2.5 py-0.5 rounded-full bg-white border border-[#ebe7df]">
                 {synthesizedResult.moodScore} / 10
               </span>
             </div>
@@ -402,7 +571,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#ebe7df]">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#ebe7df]">
             <button
               onClick={() => setSynthesizedResult(null)}
               className="px-4 py-2 text-sm text-[#64748b] hover:text-[#1f2421] font-medium"
@@ -411,9 +580,11 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
             </button>
             <button
               onClick={handleFinalSave}
-              className="px-5 py-2.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full font-medium text-sm shadow-sm transition-all"
+              disabled={isSaving}
+              className="px-6 py-2.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full font-semibold text-sm shadow-sm transition-all disabled:opacity-50 flex items-center gap-2"
             >
-              Save to Journal
+              <CheckCircle2 className="w-4 h-4" />
+              <span>{isSaving ? 'Saving...' : 'Save to Journal'}</span>
             </button>
           </div>
         </div>
@@ -423,13 +594,30 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
 
   // 3. Conversational Writing Flow
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col h-[calc(100vh-5rem)]">
+    <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6 flex flex-col h-[calc(100vh-5rem)]">
+      {/* Draft Restored Banner */}
+      {draftRestoredBanner && (
+        <div className="mb-3 p-2.5 rounded-2xl bg-[#e8edea] border border-[#5b7065]/30 text-[#2c4035] text-xs flex items-center justify-between animate-fadeIn">
+          <span className="flex items-center gap-1.5">
+            <BookmarkCheck className="w-4 h-4 text-[#5b7065]" />
+            Restored unfinished thoughts from your previous session
+          </span>
+          <button
+            onClick={() => setDraftRestoredBanner(false)}
+            className="p-1 text-[#5b7065] hover:text-[#1f2421]"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Header bar */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#ebe7df] mb-4">
+      <div className="flex items-center justify-between pb-3 border-b border-[#ebe7df] mb-3">
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setSelectedPrompt(null)}
+            onClick={handleBackNavigation}
             className="p-1.5 text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb] rounded-full transition-colors"
+            title="Back"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -438,41 +626,60 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               {selectedPrompt.title}
             </h2>
             <p className="text-[11px] text-[#64748b]">
-              Interactive reflection partner
+              Reflect with AI mirror or save anytime
             </p>
           </div>
         </div>
 
-        {messages.length >= 2 && (
+        {/* Action Header Buttons */}
+        <div className="flex items-center gap-2">
+          {/* Quick 1-Click Save */}
           <button
-            onClick={handleSynthesizeAndWrapUp}
-            disabled={isSynthesizing || isStreaming}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs font-medium shadow-sm transition-all disabled:opacity-50"
+            onClick={handleDirectSave}
+            disabled={isSaving || !hasUserWritten}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs font-semibold shadow-xs transition-all disabled:opacity-40"
+            title="Save directly to your journal"
           >
-            {isSynthesizing ? (
-              <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>Synthesizing...</span>
-              </>
-            ) : (
-              <>
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Wrap Up Entry</span>
-              </>
-            )}
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>{isSaving ? 'Saving...' : 'Save Entry'}</span>
           </button>
-        )}
+
+          {/* AI Synthesis Wrap-Up */}
+          {hasUserWritten && (
+            <button
+              onClick={handleSynthesizeAndWrapUp}
+              disabled={isSynthesizing || isStreaming}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f5f2eb] hover:bg-[#ebe7df] text-[#2c4035] rounded-full text-xs font-medium border border-[#ebe7df] transition-all disabled:opacity-50 hidden sm:inline-flex"
+              title="Get AI tags and summary"
+            >
+              {isSynthesizing ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Synthesizing...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>AI Review</span>
+                </>
+              )}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* API Error Notification */}
       {apiError && (
-        <div className="p-3 mb-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between">
-          <span>{apiError}</span>
+        <div className="p-3 mb-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between">
+          <span className="flex items-center gap-1.5">
+            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+            {apiError}
+          </span>
           <button
             onClick={onOpenSettings}
             className="font-semibold underline ml-2 hover:text-amber-950 shrink-0"
           >
-            Open Settings
+            Settings
           </button>
         </div>
       )}
@@ -529,12 +736,12 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                 handleSendMessage();
               }
             }}
-            placeholder="Write your thoughts here... (Enter to reflect, Shift+Enter for new line)"
-            className="w-full px-3 py-1 text-sm bg-transparent resize-none focus:outline-none text-[#1f2421] placeholder:text-[#94a3b8]"
+            placeholder="Write your thoughts here... (Enter to reflect with AI, Shift+Enter for new line)"
+            className="w-full px-3 py-1.5 text-sm bg-transparent resize-none focus:outline-none text-[#1f2421] placeholder:text-[#94a3b8]"
           />
 
           <div className="flex items-center justify-between px-2 pt-1 border-t border-gray-100/60">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <VoiceRecorder
                 onTranscription={handleVoiceTranscription}
                 disabled={isStreaming}
@@ -544,16 +751,84 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               </span>
             </div>
 
-            <button
-              onClick={handleSendMessage}
-              disabled={!inputText.trim() || isStreaming}
-              className="p-2 bg-[#5b7065] hover:bg-[#485b51] disabled:opacity-40 text-white rounded-full transition-all shadow-xs"
-            >
-              <Send className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Direct Save & Finish button in toolbar */}
+              <button
+                type="button"
+                onClick={handleDirectSave}
+                disabled={isSaving || !hasUserWritten}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#e8edea] hover:bg-[#d8e3dc] text-[#2c4035] rounded-full text-xs font-semibold transition-all disabled:opacity-40 shadow-2xs"
+                title="Save this entry to your journal immediately"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#5b7065]" />
+                <span>{isSaving ? 'Saving...' : 'Save & Finish'}</span>
+              </button>
+
+              {/* Send / Reflect Button */}
+              <button
+                type="button"
+                onClick={handleSendMessage}
+                disabled={!inputText.trim() || isStreaming}
+                className="flex items-center gap-1 px-3 py-1.5 bg-[#5b7065] hover:bg-[#485b51] disabled:opacity-40 text-white rounded-full text-xs font-medium transition-all shadow-xs"
+                title="Reflect with AI"
+              >
+                <span>Reflect</span>
+                <Send className="w-3 h-3" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Confirmation Modal when Leaving with Unsaved Text */}
+      {showExitConfirm && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-6 border border-[#ebe7df] shadow-xl space-y-4">
+            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center">
+              <BookmarkCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-serif font-semibold text-lg text-[#1f2421]">
+                Save your reflection?
+              </h3>
+              <p className="text-xs text-[#64748b] mt-1">
+                You have thoughts written in this session. Would you like to save them to your journal before leaving?
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 pt-2">
+              <button
+                onClick={() => {
+                  setShowExitConfirm(false);
+                  handleDirectSave();
+                }}
+                className="w-full py-2.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs font-semibold transition-all"
+              >
+                Save to Journal
+              </button>
+              <button
+                onClick={() => {
+                  setShowExitConfirm(false);
+                  // keep draft in localStorage so they can resume later
+                  onCancel();
+                }}
+                className="w-full py-2 bg-[#f5f2eb] hover:bg-[#ebe7df] text-[#475569] rounded-full text-xs font-medium transition-all"
+              >
+                Save as Draft & Exit
+              </button>
+              <button
+                onClick={() => {
+                  setShowExitConfirm(false);
+                  clearStoredDraft();
+                  onCancel();
+                }}
+                className="w-full py-2 text-[#94a3b8] hover:text-red-600 text-xs font-medium transition-all"
+              >
+                Discard
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
