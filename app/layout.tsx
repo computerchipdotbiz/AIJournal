@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rosebud — AI Self-Reflection Journal",
+  title: "ChipMind — AI Self-Reflection Journal",
   description: "An interactive AI-powered journal for emotional clarity, CBT reframing, and personal growth insights.",
 };
 

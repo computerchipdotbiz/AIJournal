@@ -1,6 +1,6 @@
 {
-  "name": "Rosebud AI Journal",
-  "short_name": "Rosebud",
+  "name": "ChipMind AI Journal",
+  "short_name": "ChipMind",
   "description": "An interactive AI-powered journal for emotional clarity and growth",
   "start_url": "/",
   "display": "standalone",

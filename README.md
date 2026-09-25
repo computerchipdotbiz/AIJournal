@@ -1,6 +1,6 @@
-# Rosebud AI — Self-Reflection Journal
+# ChipMind — AI Self-Reflection Journal
 
-A personal, AI-powered interactive journal inspired by [Rosebud.app](https://rosebud.app). Built for emotional clarity, CBT-style cognitive reframing, habit tracking, and automated weekly syntheses.
+A personal, AI-powered interactive journal. Built for emotional clarity, CBT-style cognitive reframing, habit tracking, and automated weekly syntheses.
 
 ---
 
@@ -64,7 +64,7 @@ You can host this app with zero monthly fees, total control of updates, and your
    ```bash
    git init
    git add .
-   git commit -m "Initial commit of Rosebud AI Journal"
+   git commit -m "Initial commit of ChipMind AI Journal"
    git branch -M main
    git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
    git push -u origin main

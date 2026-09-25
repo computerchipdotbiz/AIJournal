@@ -1,5 +1,5 @@
 -- ==============================================================================
--- ROSEBUD-STYLE AI JOURNAL DATABASE SCHEMA (SUPABASE POSTGRESQL + PGVECTOR)
+-- CHIPMIND AI JOURNAL DATABASE SCHEMA (SUPABASE POSTGRESQL + PGVECTOR)
 -- ==============================================================================
 -- Run this entire script in your Supabase Dashboard -> SQL Editor -> Click 'Run'.
 

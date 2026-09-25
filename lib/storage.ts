@@ -1,9 +1,9 @@
 import { JournalEntry, WeeklyInsight, UserSettings } from './types';
 import { getSupabaseClient, isSupabaseConfigured } from './supabase/client';
 
-const ENTRIES_KEY = 'rosebud_journal_entries';
-const INSIGHTS_KEY = 'rosebud_journal_insights';
-const SETTINGS_KEY = 'rosebud_journal_settings';
+const ENTRIES_KEY = 'chipmind_journal_entries';
+const INSIGHTS_KEY = 'chipmind_journal_insights';
+const SETTINGS_KEY = 'chipmind_journal_settings';
 
 export const DEFAULT_SETTINGS: UserSettings = {
   userName: 'Friend',
@@ -16,7 +16,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
 export const getStoredSettings = (): UserSettings => {
   if (typeof window === 'undefined') return DEFAULT_SETTINGS;
   try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
+    const raw = localStorage.getItem(SETTINGS_KEY) || localStorage.getItem('rosebud_journal_settings');
     return raw ? { ...DEFAULT_SETTINGS, ...JSON.parse(raw) } : DEFAULT_SETTINGS;
   } catch {
     return DEFAULT_SETTINGS;
@@ -70,7 +70,7 @@ export const fetchEntries = async (): Promise<JournalEntry[]> => {
 
   // Fallback to local storage
   try {
-    const raw = localStorage.getItem(ENTRIES_KEY);
+    const raw = localStorage.getItem(ENTRIES_KEY) || localStorage.getItem('rosebud_journal_entries');
     if (!raw) return [];
     return JSON.parse(raw);
   } catch {
@@ -150,7 +150,7 @@ export const deleteEntry = async (id: string): Promise<void> => {
 export const fetchWeeklyInsights = async (): Promise<WeeklyInsight[]> => {
   if (typeof window === 'undefined') return [];
   try {
-    const raw = localStorage.getItem(INSIGHTS_KEY);
+    const raw = localStorage.getItem(INSIGHTS_KEY) || localStorage.getItem('rosebud_journal_insights');
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];

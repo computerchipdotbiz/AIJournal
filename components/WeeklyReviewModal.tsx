@@ -101,7 +101,7 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
                 Weekly AI Review & Patterns
               </h2>
               <p className="text-xs text-[#64748b]">
-                Rosebud pattern recognition across your recent writing
+                ChipMind pattern recognition across your recent writing
               </p>
             </div>
           </div>

@@ -33,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
           <div>
             <span className="font-serif font-semibold text-lg tracking-tight text-[#1f2421]">
-              Rosebud
+              ChipMind
             </span>
             <span className="text-xs text-[#64748b] ml-1.5 font-sans font-medium hidden sm:inline-block">
               Self-Reflection
