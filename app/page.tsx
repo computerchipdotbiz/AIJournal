@@ -41,10 +41,19 @@ export default function Home() {
   const [isWeeklyReviewOpen, setIsWeeklyReviewOpen] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasServerKey, setHasServerKey] = useState(false);
 
   // Initialize data on client load
   useEffect(() => {
     const init = async () => {
+      // Check if server environment variable has GEMINI_API_KEY
+      fetch('/api/config')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.hasServerKey) setHasServerKey(true);
+        })
+        .catch(() => {});
+
       const loadedSettings = getStoredSettings();
       setSettings(loadedSettings);
       if (loadedSettings.passcodeEnabled && loadedSettings.passcodeHash) {
@@ -212,7 +221,7 @@ export default function Home() {
         {activeTab === 'journal' && (
           <div className="space-y-6 animate-fadeIn">
             {/* API Key prompt banner if missing */}
-            {!settings.geminiApiKey && (
+            {!settings.geminiApiKey && !hasServerKey && (
               <div className="p-4 rounded-3xl bg-amber-50 border border-amber-200 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
                 <div className="flex items-center gap-2.5">
                   <div className="p-2 rounded-2xl bg-amber-100 text-amber-700">
@@ -360,6 +369,7 @@ export default function Home() {
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         settings={settings}
+        hasServerKey={hasServerKey}
         onSaveSettings={handleUpdateSettings}
         entries={entries}
       />

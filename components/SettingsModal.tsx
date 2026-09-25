@@ -21,6 +21,7 @@ interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   settings: UserSettings;
+  hasServerKey?: boolean;
   onSaveSettings: (settings: Partial<UserSettings>) => void;
   entries: JournalEntry[];
 }
@@ -29,6 +30,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
   settings,
+  hasServerKey = false,
   onSaveSettings,
   entries,
 }) => {
@@ -151,6 +153,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* 1. AI CONFIGURATION */}
           {activeTab === 'ai' && (
             <div className="space-y-5">
+              {hasServerKey && (
+                <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center gap-2 font-medium">
+                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Gemini API Key is active from your Vercel server environment.</span>
+                </div>
+              )}
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748b] mb-1.5">
                   Google Gemini API Key
