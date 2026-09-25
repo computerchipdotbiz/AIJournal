@@ -16,6 +16,7 @@ export interface JournalEntry {
   tags: string[]; // e.g. ["work", "relationships", "mindset"]
   actionItems: string[]; // actionable takeaways
   conversation: JournalMessage[]; // full multi-turn transcript
+  photos?: string[]; // base64 / data URLs of daily photos
   promptUsed?: string;
   createdAt: string;
   updatedAt: string;

@@ -8,7 +8,8 @@ import {
   ChevronUp,
   Trash2,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  X
 } from 'lucide-react';
 import { JournalEntry } from '@/lib/types';
 
@@ -19,6 +20,7 @@ interface EntryCardProps {
 
 export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [lightboxPhoto, setLightboxPhoto] = useState<string | null>(null);
 
   const getMoodColor = (score: number) => {
     if (score >= 8) return 'bg-amber-100 text-amber-800 border-amber-200';
@@ -94,6 +96,34 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
         </div>
       )}
 
+      {/* Attached Photos Gallery */}
+      {entry.photos && entry.photos.length > 0 && (
+        <div
+          className={`mb-3.5 gap-2 grid ${
+            entry.photos.length === 1
+              ? 'grid-cols-1'
+              : entry.photos.length === 2
+              ? 'grid-cols-2'
+              : 'grid-cols-2 sm:grid-cols-3'
+          }`}
+        >
+          {entry.photos.map((photoUrl, idx) => (
+            <div
+              key={idx}
+              onClick={() => setLightboxPhoto(photoUrl)}
+              className="relative overflow-hidden rounded-2xl border border-[#ebe7df] bg-[#f5f2eb] aspect-4/3 cursor-pointer group shadow-2xs hover:shadow-xs transition-all"
+            >
+              <img
+                src={photoUrl}
+                alt={`Journal photo ${idx + 1}`}
+                className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Action Items if any */}
       {entry.actionItems && entry.actionItems.length > 0 && (
         <div className="mb-3">
@@ -158,6 +188,32 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Full-Screen Photo Lightbox Modal */}
+      {lightboxPhoto && (
+        <div
+          onClick={() => setLightboxPhoto(null)}
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-3xl max-h-[90vh] flex flex-col items-center"
+          >
+            <button
+              onClick={() => setLightboxPhoto(null)}
+              className="absolute -top-10 right-0 p-1.5 text-white/80 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              title="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src={lightboxPhoto}
+              alt="Full resolution journal photo"
+              className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl border border-white/10"
+            />
+          </div>
         </div>
       )}
     </article>

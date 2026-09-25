@@ -16,12 +16,16 @@ import {
   BookOpen,
   BookmarkCheck,
   AlertCircle,
+  Camera,
+  Image as ImageIcon,
+  Plus,
   X
 } from 'lucide-react';
 import { JournalMessage, JournalEntry, JournalPrompt } from '@/lib/types';
 import { JOURNAL_PROMPTS } from '@/lib/prompts';
 import { VoiceRecorder } from './VoiceRecorder';
 import { getStoredDraft, saveStoredDraft, clearStoredDraft } from '@/lib/storage';
+import { compressImage } from '@/lib/imageUtils';
 
 interface InteractiveJournalProps {
   apiKey: string;
@@ -41,6 +45,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
   const [selectedPrompt, setSelectedPrompt] = useState<JournalPrompt | null>(null);
   const [messages, setMessages] = useState<JournalMessage[]>([]);
   const [inputText, setInputText] = useState('');
+  const [photos, setPhotos] = useState<string[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -60,11 +65,12 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Restore draft if one exists on mount
   useEffect(() => {
     const draft = getStoredDraft();
-    if (draft && (draft.messages.length > 0 || draft.inputText.trim())) {
+    if (draft && (draft.messages.length > 0 || draft.inputText.trim() || (draft.photos && draft.photos.length > 0))) {
       if (draft.promptId) {
         const found = JOURNAL_PROMPTS.find((p) => p.id === draft.promptId);
         if (found) setSelectedPrompt(found);
@@ -73,6 +79,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
       }
       setMessages(draft.messages || []);
       setInputText(draft.inputText || '');
+      if (draft.photos) setPhotos(draft.photos);
       setDraftRestoredBanner(true);
     }
   }, []);
@@ -80,16 +87,41 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
   // Auto-save draft on changes (debounced)
   useEffect(() => {
     if (!selectedPrompt) return;
-    const hasData = messages.length > 0 || inputText.trim().length > 0;
+    const hasData = messages.length > 0 || inputText.trim().length > 0 || photos.length > 0;
     if (hasData) {
       saveStoredDraft({
         promptId: selectedPrompt.id,
         promptTitle: selectedPrompt.title,
         messages,
         inputText,
+        photos,
       });
     }
-  }, [selectedPrompt, messages, inputText]);
+  }, [selectedPrompt, messages, inputText, photos]);
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    try {
+      const compressedList: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!file.type.startsWith('image/')) continue;
+        const compressed = await compressImage(file, 1200, 0.75);
+        compressedList.push(compressed);
+      }
+      setPhotos((prev) => [...prev, ...compressedList].slice(0, 6)); // max 6 photos per entry
+    } catch (err) {
+      console.error('Error compressing photo:', err);
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemovePhoto = (index: number) => {
+    setPhotos((prev) => prev.filter((_, idx) => idx !== index));
+  };
 
   // Auto-scroll as messages or tokens arrive
   useEffect(() => {
@@ -248,6 +280,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
       tags: [selectedPrompt?.category || 'daily', 'reflection'],
       actionItems: [],
       conversation: currentMessages,
+      photos: photos.length > 0 ? photos : undefined,
       promptUsed: selectedPrompt?.title || 'Open Reflection',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -353,6 +386,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
       tags: synthesizedResult.tags,
       actionItems: synthesizedResult.actionItems,
       conversation: messages,
+      photos: photos.length > 0 ? photos : undefined,
       promptUsed: selectedPrompt?.title || 'Open Reflection',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -364,7 +398,10 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
   };
 
   const handleBackNavigation = () => {
-    const hasContent = inputText.trim().length > 0 || messages.some((m) => m.sender === 'user');
+    const hasContent =
+      inputText.trim().length > 0 ||
+      messages.some((m) => m.sender === 'user') ||
+      photos.length > 0;
     if (hasContent) {
       setShowExitConfirm(true);
     } else {
@@ -373,7 +410,10 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
     }
   };
 
-  const hasUserWritten = inputText.trim().length > 0 || messages.some((m) => m.sender === 'user');
+  const hasUserWritten =
+    inputText.trim().length > 0 ||
+    messages.some((m) => m.sender === 'user') ||
+    photos.length > 0;
 
   // 1. Initial Prompt Selection Screen
   if (!selectedPrompt) {
@@ -599,7 +639,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
 
   // 3. Conversational Writing Flow
   return (
-    <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6 flex flex-col h-[calc(100vh-5rem)]">
+    <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 sm:py-6 flex flex-col h-[calc(100dvh-4.25rem)] sm:h-[calc(100vh-5rem)]">
       {/* Draft Restored Banner */}
       {draftRestoredBanner && (
         <div className="mb-3 p-2.5 rounded-2xl bg-[#e8edea] border border-[#5b7065]/30 text-[#2c4035] text-xs flex items-center justify-between animate-fadeIn">
@@ -730,6 +770,40 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
       {/* Input Composer */}
       <div className="mt-3 pt-2 border-t border-[#ebe7df]">
         <div className="relative bg-white border border-[#ebe7df] focus-within:border-[#5b7065] focus-within:ring-3 focus-within:ring-[#5b7065]/15 rounded-3xl p-2 transition-all shadow-sm">
+          {/* Photo Preview Strip */}
+          {photos.length > 0 && (
+            <div className="flex items-center gap-2 px-2 pt-1 pb-2 overflow-x-auto border-b border-[#f5f2eb] mb-1.5">
+              {photos.map((photoUrl, idx) => (
+                <div key={idx} className="relative shrink-0 group">
+                  <img
+                    src={photoUrl}
+                    alt={`Photo ${idx + 1}`}
+                    className="w-14 h-14 object-cover rounded-2xl border border-[#ebe7df] shadow-2xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemovePhoto(idx)}
+                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#1f2421]/80 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-[10px] transition-colors shadow-xs"
+                    title="Remove photo"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+              {photos.length < 6 && (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-14 h-14 rounded-2xl border-2 border-dashed border-[#ebe7df] hover:border-[#5b7065] text-[#94a3b8] hover:text-[#5b7065] flex flex-col items-center justify-center text-[10px] transition-colors shrink-0"
+                  title="Add more photos"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="text-[9px]">Add</span>
+                </button>
+              )}
+            </div>
+          )}
+
           <textarea
             ref={textareaRef}
             rows={2}
@@ -746,13 +820,38 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
           />
 
           <div className="flex items-center justify-between px-2 pt-1 border-t border-gray-100/60">
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <VoiceRecorder
                 onTranscription={handleVoiceTranscription}
                 disabled={isStreaming}
               />
+
+              {/* Photo Upload Button */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handlePhotoUpload}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isStreaming || photos.length >= 6}
+                className="p-1.5 text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb] rounded-full transition-colors relative"
+                title="Add photo from your day"
+              >
+                <Camera className="w-4 h-4 text-[#5b7065]" />
+                {photos.length > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-[#5b7065] text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {photos.length}
+                  </span>
+                )}
+              </button>
+
               <span className="text-[11px] text-[#94a3b8] hidden sm:inline">
-                Tap mic to speak
+                Voice &amp; Photos
               </span>
             </div>
 

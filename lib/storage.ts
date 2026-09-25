@@ -11,6 +11,7 @@ export interface JournalDraft {
   promptTitle?: string;
   messages: JournalMessage[];
   inputText: string;
+  photos?: string[];
   updatedAt: string;
 }
 
@@ -102,6 +103,7 @@ export const fetchEntries = async (): Promise<JournalEntry[]> => {
             tags: item.tags || [],
             actionItems: item.action_items || [],
             conversation: item.conversation || [],
+            photos: item.photos || [],
             promptUsed: item.prompt_used,
             createdAt: item.created_at,
             updatedAt: item.updated_at
@@ -163,6 +165,7 @@ export const saveEntry = async (entry: JournalEntry): Promise<void> => {
           tags: entry.tags,
           action_items: entry.actionItems,
           conversation: entry.conversation,
+          photos: entry.photos || [],
           prompt_used: entry.promptUsed,
           updated_at: new Date().toISOString()
         });
