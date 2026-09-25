@@ -22,6 +22,12 @@ export async function POST(req: Request) {
       }
 
       const tokenInfo = await response.json();
+      if (tokenInfo.email_verified === false || tokenInfo.email_verified === 'false') {
+        return Response.json(
+          { error: 'Google account email is not verified.' },
+          { status: 400 }
+        );
+      }
       authenticatedEmail = tokenInfo.email || '';
     } else if (password) {
       // 2. Authenticate via Owner Secret Password

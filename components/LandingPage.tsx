@@ -31,54 +31,63 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [loading, setLoading] = useState(false);
   const [ownerPassword, setOwnerPassword] = useState('');
   const [showPasswordLogin, setShowPasswordLogin] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
   const googleBtnRef = useRef<HTMLDivElement>(null);
 
   // Initialize Google Identity Services when script loads and client ID exists
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const win = window as any;
-    if (googleClientId && win.google?.accounts?.id && googleBtnRef.current) {
-      try {
-        win.google.accounts.id.initialize({
-          client_id: googleClientId,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: async (response: any) => {
-            if (response.credential) {
-              setLoading(true);
-              setError(null);
-              try {
-                const res = await fetch('/api/auth/google', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ credential: response.credential }),
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                  setError(data.error || 'Failed to authenticate with Google');
-                } else {
-                  onLoginSuccess(data.email);
+    const initGoogle = () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const win = window as any;
+      if (googleClientId && win.google?.accounts?.id && googleBtnRef.current) {
+        try {
+          win.google.accounts.id.initialize({
+            client_id: googleClientId,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            callback: async (response: any) => {
+              if (response.credential) {
+                setLoading(true);
+                setError(null);
+                try {
+                  const res = await fetch('/api/auth/google', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ credential: response.credential }),
+                  });
+                  const data = await res.json();
+                  if (!res.ok) {
+                    setError(data.error || 'Failed to authenticate with Google');
+                  } else {
+                    onLoginSuccess(data.email);
+                  }
+                } catch {
+                  setError('Network error during Google sign in.');
+                } finally {
+                  setLoading(false);
                 }
-              } catch {
-                setError('Network error during Google sign in.');
-              } finally {
-                setLoading(false);
               }
-            }
-          },
-        });
+            },
+          });
 
-        win.google.accounts.id.renderButton(googleBtnRef.current, {
-          theme: 'outline',
-          size: 'large',
-          text: 'signin_with',
-          shape: 'pill',
-          width: 280,
-        });
-      } catch (err) {
-        console.error('Google Sign In Init Error:', err);
+          if (googleBtnRef.current.children.length === 0) {
+            win.google.accounts.id.renderButton(googleBtnRef.current, {
+              theme: 'outline',
+              size: 'large',
+              text: 'signin_with',
+              shape: 'pill',
+              width: 280,
+            });
+          }
+        } catch (err) {
+          console.error('Google Sign In Init Error:', err);
+        }
       }
-    }
-  }, [googleClientId, onLoginSuccess]);
+    };
+
+    initGoogle();
+    const interval = setInterval(initGoogle, 400);
+    return () => clearInterval(interval);
+  }, [googleClientId, scriptLoaded, onLoginSuccess]);
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,7 +118,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   return (
     <div className="min-h-screen bg-[#fcfbf9] text-[#1f2421] flex flex-col font-sans selection:bg-[#5b7065]/20">
-      <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
+      <Script
+        src="https://accounts.google.com/gsi/client"
+        strategy="afterInteractive"
+        onLoad={() => setScriptLoaded(true)}
+      />
 
       {/* Header */}
       <header className="w-full border-b border-[#ebe7df] bg-[#fcfbf9]/80 backdrop-blur-md sticky top-0 z-40">
