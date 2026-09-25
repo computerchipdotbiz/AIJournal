@@ -186,9 +186,14 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
           )
         );
       }
+
+      if (!assistantReply.trim()) {
+        setMessages((prev) => prev.filter((msg) => msg.id !== assistantId));
+        setApiError('Reflection mirror was momentarily quiet. You can try sending again or save your entry.');
+      }
     } catch (err: unknown) {
       console.error('Error reflecting:', err);
-      setApiError('Network or reflection service error. Your writing is still safely saved.');
+      setApiError('Network or reflection service error. Your writing is safely saved.');
     } finally {
       setIsStreaming(false);
     }

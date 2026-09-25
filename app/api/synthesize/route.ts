@@ -59,31 +59,33 @@ export async function POST(req: Request) {
       .join('\n\n');
 
     let text = '';
-    try {
-      const res = await generateText({
-        model: google('gemini-flash-latest'),
-        system: SYNTHESIS_SYSTEM_PROMPT,
-        prompt: `Here is the journal entry conversation transcript:\n\n${conversationTranscript}\n\nPlease generate the JSON synthesis:`,
-        temperature: 0.3,
-      });
-      text = res.text;
-    } catch {
-      // Secondary fallback model
+    const candidateModels = [
+      'gemini-3.5-flash-lite',
+      'gemini-3.6-flash',
+      'gemini-flash-lite-latest',
+      'gemini-3-flash-preview',
+    ];
+
+    for (const modelName of candidateModels) {
       try {
-        const res2 = await generateText({
-          model: google('gemini-3.8-flash'),
+        const res = await generateText({
+          model: google(modelName),
           system: SYNTHESIS_SYSTEM_PROMPT,
           prompt: `Here is the journal entry conversation transcript:\n\n${conversationTranscript}\n\nPlease generate the JSON synthesis:`,
           temperature: 0.3,
         });
-        text = res2.text;
-      } catch (innerErr) {
-        console.warn('Both Gemini models failed, falling back to local synthesis heuristic:', innerErr);
-        return new Response(JSON.stringify(buildFallback()), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' }
-        });
+        text = res.text;
+        break;
+      } catch (err) {
+        console.warn(`Synthesize model ${modelName} failed, trying next:`, err);
       }
+    }
+
+    if (!text) {
+      return new Response(JSON.stringify(buildFallback()), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Clean JSON response (handling potential markdown fences ```json ... ```)

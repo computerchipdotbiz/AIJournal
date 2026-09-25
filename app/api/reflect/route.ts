@@ -48,24 +48,35 @@ export async function POST(req: Request) {
       content: m.content
     }));
 
-    let result;
-    try {
-      result = streamText({
-        model: google('gemini-flash-latest'),
-        system: systemPrompt,
-        messages: formattedMessages,
-        temperature: 0.7,
-      });
-      return result.toTextStreamResponse();
-    } catch {
-      result = streamText({
-        model: google('gemini-3.8-flash'),
-        system: systemPrompt,
-        messages: formattedMessages,
-        temperature: 0.7,
-      });
-      return result.toTextStreamResponse();
+    const candidateModels = [
+      'gemini-3.5-flash-lite',
+      'gemini-3.6-flash',
+      'gemini-flash-lite-latest',
+      'gemini-3-flash-preview',
+    ];
+
+    for (const modelName of candidateModels) {
+      try {
+        const result = streamText({
+          model: google(modelName),
+          system: systemPrompt,
+          messages: formattedMessages,
+          temperature: 0.7,
+        });
+        return result.toTextStreamResponse();
+      } catch (err) {
+        console.warn(`Model ${modelName} stream init failed, trying next:`, err);
+      }
     }
+
+    // Final attempt if loop finished
+    const finalResult = streamText({
+      model: google('gemini-3.5-flash-lite'),
+      system: systemPrompt,
+      messages: formattedMessages,
+      temperature: 0.7,
+    });
+    return finalResult.toTextStreamResponse();
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown reflection error';
     console.error('Reflection API Error:', error);
