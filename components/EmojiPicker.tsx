@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Sparkles, Heart, Zap, CloudRain, Sun, Smile } from 'lucide-react';
+import { X, Laugh, Sparkles, Heart, Zap, CloudRain, Sun, Smile } from 'lucide-react';
 
 interface EmojiPickerProps {
   isOpen: boolean;
@@ -16,7 +16,18 @@ interface EmojiCategory {
   emojis: string[];
 }
 
+const QUICK_FAVORITES = ['😂', '🤣', '💀', '😭', '😌', '✨', '🤍'];
+
 const EMOJI_CATEGORIES: EmojiCategory[] = [
+  {
+    id: 'laughter',
+    name: 'Laughter & Humor',
+    icon: <Laugh className="w-3.5 h-3.5 text-amber-500" />,
+    emojis: [
+      '😂', '🤣', '💀', '😭', '😆', '😅', '🤪', '😜', '😝', '🤭',
+      '😹', '🤡', '🙃', '🫠', '🙈', '🥴', '😈', '🪦', '🍿', '🤦', '🤷'
+    ],
+  },
   {
     id: 'calm',
     name: 'Calm & Gratitude',
@@ -60,7 +71,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
   onClose,
   onSelectEmoji,
 }) => {
-  const [activeCategory, setActiveCategory] = useState<string>('calm');
+  const [activeCategory, setActiveCategory] = useState<string>('laughter');
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Close on outside click
@@ -106,6 +117,24 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
         >
           <X className="w-3.5 h-3.5" />
         </button>
+      </div>
+
+      {/* Top Quick Favorites Bar */}
+      <div className="flex items-center justify-between px-1.5 py-1 mb-2 bg-[#fcfbf9] rounded-2xl border border-[#ebe7df]/60">
+        <span className="text-[10px] uppercase tracking-wider text-[#94a3b8] font-bold">Quick:</span>
+        <div className="flex items-center gap-1">
+          {QUICK_FAVORITES.map((emoji, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => onSelectEmoji(emoji)}
+              className="w-7 h-7 flex items-center justify-center text-lg hover:bg-white rounded-lg transition-transform active:scale-125"
+              title={`Insert ${emoji}`}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Category Pills */}
