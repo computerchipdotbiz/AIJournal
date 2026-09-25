@@ -19,6 +19,7 @@ import {
   Camera,
   Image as ImageIcon,
   Plus,
+  Smile,
   X
 } from 'lucide-react';
 import { JournalMessage, JournalEntry, JournalPrompt } from '@/lib/types';
@@ -26,6 +27,7 @@ import { JOURNAL_PROMPTS } from '@/lib/prompts';
 import { VoiceRecorder } from './VoiceRecorder';
 import { getStoredDraft, saveStoredDraft, clearStoredDraft } from '@/lib/storage';
 import { compressImage } from '@/lib/imageUtils';
+import { EmojiPicker } from './EmojiPicker';
 
 interface InteractiveJournalProps {
   apiKey: string;
@@ -49,6 +51,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
   const [isStreaming, setIsStreaming] = useState(false);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isEmojiOpen, setIsEmojiOpen] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [draftRestoredBanner, setDraftRestoredBanner] = useState(false);
@@ -233,6 +236,23 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
 
   const handleVoiceTranscription = (text: string) => {
     setInputText((prev) => (prev ? `${prev} ${text}` : text));
+  };
+
+  const handleInsertEmoji = (emoji: string) => {
+    if (textareaRef.current) {
+      const start = textareaRef.current.selectionStart ?? inputText.length;
+      const end = textareaRef.current.selectionEnd ?? inputText.length;
+      const nextText = inputText.substring(0, start) + emoji + inputText.substring(end);
+      setInputText(nextText);
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          textareaRef.current.setSelectionRange(start + emoji.length, start + emoji.length);
+        }
+      }, 10);
+    } else {
+      setInputText((prev) => prev + emoji);
+    }
   };
 
   // Direct save without requiring AI synthesis
@@ -850,8 +870,30 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                 )}
               </button>
 
+              {/* Emoji Palette Button */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsEmojiOpen(!isEmojiOpen)}
+                  className={`p-1.5 rounded-full transition-colors ${
+                    isEmojiOpen
+                      ? 'bg-[#e8edea] text-[#2c4035]'
+                      : 'text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb]'
+                  }`}
+                  title="Add emoji nuance"
+                >
+                  <Smile className="w-4 h-4 text-amber-500" />
+                </button>
+
+                <EmojiPicker
+                  isOpen={isEmojiOpen}
+                  onClose={() => setIsEmojiOpen(false)}
+                  onSelectEmoji={handleInsertEmoji}
+                />
+              </div>
+
               <span className="text-[11px] text-[#94a3b8] hidden sm:inline">
-                Voice &amp; Photos
+                Voice &amp; Nuance
               </span>
             </div>
 
