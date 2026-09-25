@@ -1,13 +1,15 @@
 'use client';
 
 import React from 'react';
-import { BookOpen, Sparkles, TrendingUp, Settings, Plus, Lock } from 'lucide-react';
+import { BookOpen, Sparkles, TrendingUp, Settings, Plus, Lock, LogOut } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'journal' | 'insights' | 'new';
   setActiveTab: (tab: 'journal' | 'insights' | 'new') => void;
   onOpenSettings: () => void;
   onLockApp?: () => void;
+  onLogout?: () => void;
+  userEmail?: string | null;
   passcodeEnabled?: boolean;
   entryCount: number;
 }
@@ -17,6 +19,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   onOpenSettings,
   onLockApp,
+  onLogout,
+  userEmail,
   passcodeEnabled,
   entryCount,
 }) => {
@@ -102,6 +106,16 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Settings className="w-5 h-5" />
           </button>
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              title={`Sign Out (${userEmail || 'everythingfunny@gmail.com'})`}
+              className="p-2 text-[#94a3b8] hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </header>

@@ -29,6 +29,7 @@ import { MoodChart } from '@/components/MoodChart';
 import { WeeklyReviewModal } from '@/components/WeeklyReviewModal';
 import { SettingsModal } from '@/components/SettingsModal';
 import { PasscodeLock } from '@/components/PasscodeLock';
+import { LandingPage } from '@/components/LandingPage';
 
 export default function Home() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
@@ -43,10 +44,33 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasServerKey, setHasServerKey] = useState(false);
 
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [allowedEmail, setAllowedEmail] = useState('everythingfunny@gmail.com');
+  const [googleClientId, setGoogleClientId] = useState('');
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
+
   // Initialize data on client load
   useEffect(() => {
     const init = async () => {
-      // Check if server environment variable has GEMINI_API_KEY
+      // 1. Check Session & Auth
+      try {
+        const authRes = await fetch('/api/auth/me');
+        if (authRes.ok) {
+          const authData = await authRes.json();
+          setIsAuthenticated(Boolean(authData.authenticated));
+          setCurrentUserEmail(authData.email || null);
+          if (authData.allowedEmail) setAllowedEmail(authData.allowedEmail);
+          if (authData.googleClientId) setGoogleClientId(authData.googleClientId);
+        }
+      } catch (err) {
+        console.warn('Auth check error:', err);
+      } finally {
+        setIsAuthChecking(false);
+      }
+
+      // 2. Check if server environment variable has GEMINI_API_KEY
       fetch('/api/config')
         .then((res) => res.json())
         .then((data) => {
@@ -115,6 +139,46 @@ export default function Home() {
     return matchesSearch && matchesTag;
   });
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // ignore
+    }
+    setIsAuthenticated(false);
+    setCurrentUserEmail(null);
+  };
+
+  // Loading state while checking authentication
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-[#fcfbf9] flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="w-10 h-10 rounded-2xl bg-[#e8edea] text-[#5b7065] flex items-center justify-center mx-auto animate-pulse">
+            <Sparkles className="w-5 h-5 text-amber-500" />
+          </div>
+          <p className="text-xs text-[#64748b] font-medium">
+            Entering private journal...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show public Welcome Landing Page if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <LandingPage
+        onLoginSuccess={(email) => {
+          setIsAuthenticated(true);
+          setCurrentUserEmail(email);
+        }}
+        allowedEmail={allowedEmail}
+        googleClientId={googleClientId}
+      />
+    );
+  }
+
   // Passcode lock screen if active
   if (isLocked) {
     return (
@@ -135,6 +199,8 @@ export default function Home() {
         onLockApp={
           settings.passcodeEnabled ? () => setIsLocked(true) : undefined
         }
+        onLogout={handleLogout}
+        userEmail={currentUserEmail}
         passcodeEnabled={settings.passcodeEnabled}
         entryCount={entries.length}
       />

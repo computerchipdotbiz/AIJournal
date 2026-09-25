@@ -1,11 +1,20 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import { SYNTHESIS_SYSTEM_PROMPT } from '@/lib/prompts';
+import { getSession } from '@/lib/auth';
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
+    const session = await getSession();
+    if (!session) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized. Please sign in as everythingfunny@gmail.com.' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { conversation, apiKey: userApiKey } = await req.json();
 
     const apiKey = userApiKey || process.env.GEMINI_API_KEY;
