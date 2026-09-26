@@ -12,10 +12,16 @@ import {
   Copy,
   ExternalLink,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
+  Cloud,
 } from 'lucide-react';
 import { UserSettings, JournalEntry } from '@/lib/types';
 import { exportJournalAsJSON, exportJournalAsMarkdown } from '@/lib/storage';
+import { SUPABASE_SCHEMA_SQL } from '@/lib/supabase/schemaSql';
+import { testSupabaseConnection, isSupabaseConfigured } from '@/lib/supabase/client';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -43,6 +49,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [supabaseKey, setSupabaseKey] = useState(settings.supabaseAnonKey || '');
   const [copiedSchema, setCopiedSchema] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
+  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
   if (!isOpen) return null;
 
@@ -59,12 +67,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setTimeout(() => setSavedSuccess(false), 2000);
   };
 
+  const handleTestConnection = async () => {
+    setIsTesting(true);
+    setTestResult(null);
+    try {
+      const res = await testSupabaseConnection(supabaseUrl, supabaseKey);
+      setTestResult(res);
+    } catch (err: any) {
+      setTestResult({
+        success: false,
+        message: err?.message || 'Connection failed',
+      });
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
   const handleCopySchemaInstructions = () => {
-    navigator.clipboard.writeText(
-      `-- Go to Supabase -> SQL Editor and run the script in lib/supabase/schema.sql`
-    );
+    navigator.clipboard.writeText(SUPABASE_SCHEMA_SQL);
     setCopiedSchema(true);
-    setTimeout(() => setCopiedSchema(false), 2000);
+    setTimeout(() => setCopiedSchema(false), 3000);
   };
 
   return (
@@ -240,9 +262,84 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* 2. SUPABASE CLOUD SYNC */}
           {activeTab === 'database' && (
             <div className="space-y-4">
-              <div className="p-3.5 rounded-2xl bg-[#fcfbf9] border border-[#ebe7df] text-xs text-[#475569] leading-relaxed">
-                <span className="font-semibold text-[#1f2421]">Local-First Ready: </span>
-                Your journal entries are automatically stored safely in your browser. Connecting Supabase gives you automatic multi-device cloud backups and AI semantic memory across past entries.
+              {isSupabaseConfigured() ? (
+                <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 leading-relaxed flex items-start gap-2.5">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-semibold text-emerald-950">Multi-Device Cloud Sync is Active</div>
+                    <div className="text-emerald-800 text-[11px] mt-0.5">
+                      Your journal entries and memories sync seamlessly across your phone, laptop, and desktop.
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed flex items-start gap-2.5">
+                  <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-semibold text-amber-950">Local Storage Only (Single Device)</div>
+                    <div className="text-amber-800 text-[11px] mt-0.5">
+                      Entries are currently stored in this browser only. Connect free Supabase below so all your devices see the same journal.
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 3 Step Setup Guide */}
+              <div className="p-3.5 rounded-2xl bg-[#fcfbf9] border border-[#ebe7df] text-xs space-y-2">
+                <div className="font-semibold text-[#1f2421] flex items-center gap-1.5">
+                  <Cloud className="w-4 h-4 text-[#5b7065]" />
+                  <span>2-Minute Setup for Sync Across All Devices</span>
+                </div>
+                <ol className="list-decimal list-inside space-y-1.5 text-[#475569] text-[11px]">
+                  <li>
+                    Create a free project at{' '}
+                    <a
+                      href="https://supabase.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#5b7065] underline font-medium"
+                    >
+                      supabase.com
+                    </a>{' '}
+                    (100% free, no credit card required).
+                  </li>
+                  <li>
+                    Open <strong>SQL Editor &rarr; New Query</strong>, paste the schema script below, and click <strong>Run</strong>.
+                  </li>
+                  <li>
+                    Copy your <strong>Project URL</strong> and <strong>Anon Key</strong> (found in Project Settings &rarr; API) into the boxes below or into Vercel Environment Variables.
+                  </li>
+                </ol>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between text-xs text-[#64748b] mb-1">
+                  <span className="font-semibold uppercase tracking-wider text-[11px]">Database SQL Schema</span>
+                  <a
+                    href="https://supabase.com/dashboard"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#5b7065] hover:underline flex items-center gap-1 font-medium text-[11px]"
+                  >
+                    Open Supabase Dashboard <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCopySchemaInstructions}
+                  className="w-full py-2.5 px-3 text-xs bg-[#f5f2eb] hover:bg-[#ebe7df] text-[#1f2421] rounded-xl flex items-center justify-center gap-1.5 transition-colors font-medium border border-[#ebe7df]"
+                >
+                  {copiedSchema ? (
+                    <Check className="w-4 h-4 text-emerald-600" />
+                  ) : (
+                    <Copy className="w-4 h-4 text-[#5b7065]" />
+                  )}
+                  <span>
+                    {copiedSchema
+                      ? '✓ Complete SQL Script Copied to Clipboard!'
+                      : 'Copy SQL Setup Script (Paste in Supabase SQL Editor)'}
+                  </span>
+                </button>
               </div>
 
               <div>
@@ -252,7 +349,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <input
                   type="text"
                   value={supabaseUrl}
-                  onChange={(e) => setSupabaseUrl(e.target.value)}
+                  onChange={(e) => {
+                    setSupabaseUrl(e.target.value);
+                    setTestResult(null);
+                  }}
                   placeholder="https://your-project.supabase.co"
                   className="w-full px-3.5 py-2 rounded-2xl border border-[#ebe7df] focus:border-[#5b7065] focus:outline-none text-xs font-mono"
                 />
@@ -260,36 +360,50 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748b] mb-1">
-                  Supabase Anon Key
+                  Supabase Anon Public Key
                 </label>
                 <input
                   type="password"
                   value={supabaseKey}
-                  onChange={(e) => setSupabaseKey(e.target.value)}
+                  onChange={(e) => {
+                    setSupabaseKey(e.target.value);
+                    setTestResult(null);
+                  }}
                   placeholder="eyJhbGciOiJIUzI1NiIsIn..."
                   className="w-full px-3.5 py-2 rounded-2xl border border-[#ebe7df] focus:border-[#5b7065] focus:outline-none text-xs font-mono"
                 />
               </div>
 
-              <div className="pt-2">
-                <div className="flex items-center justify-between text-xs text-[#64748b] mb-1">
-                  <span>Database Table Schema</span>
-                  <a
-                    href="https://supabase.com/dashboard"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[#5b7065] hover:underline flex items-center gap-1 font-medium"
-                  >
-                    Open Supabase Dashboard <ExternalLink className="w-3 h-3" />
-                  </a>
+              {testResult && (
+                <div
+                  className={`p-3 rounded-xl text-xs flex items-start gap-2 ${
+                    testResult.success
+                      ? 'bg-emerald-50 border border-emerald-200 text-emerald-900'
+                      : 'bg-rose-50 border border-rose-200 text-rose-900'
+                  }`}
+                >
+                  {testResult.success ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                  )}
+                  <div>{testResult.message}</div>
                 </div>
+              )}
+
+              <div className="flex gap-2 pt-1">
                 <button
                   type="button"
-                  onClick={handleCopySchemaInstructions}
-                  className="w-full py-2 px-3 text-xs bg-[#f5f2eb] hover:bg-[#ebe7df] text-[#1f2421] rounded-xl flex items-center justify-center gap-1.5 transition-colors"
+                  onClick={handleTestConnection}
+                  disabled={isTesting || !supabaseUrl.trim() || !supabaseKey.trim()}
+                  className="px-4 py-2 text-xs border border-[#ebe7df] hover:border-[#5b7065] text-[#1f2421] rounded-xl flex items-center gap-1.5 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {copiedSchema ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-[#5b7065]" />}
-                  <span>{copiedSchema ? 'SQL file reference copied!' : 'View schema: lib/supabase/schema.sql'}</span>
+                  {isTesting ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#5b7065]" />
+                  ) : (
+                    <Database className="w-3.5 h-3.5 text-[#5b7065]" />
+                  )}
+                  <span>{isTesting ? 'Testing...' : 'Test Connection'}</span>
                 </button>
               </div>
             </div>

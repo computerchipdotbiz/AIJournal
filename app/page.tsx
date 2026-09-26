@@ -27,6 +27,7 @@ import {
   clearStoredDraft,
   JournalDraft,
 } from '@/lib/storage';
+import { setRuntimeSupabaseConfig } from '@/lib/supabase/client';
 import { Navbar } from '@/components/Navbar';
 import { InteractiveJournal } from '@/components/InteractiveJournal';
 import { EntryCard } from '@/components/EntryCard';
@@ -76,13 +77,19 @@ export default function Home() {
         setIsAuthChecking(false);
       }
 
-      // 2. Check if server environment variable has GEMINI_API_KEY
-      fetch('/api/config')
-        .then((res) => res.json())
-        .then((data) => {
-          if (data?.hasServerKey) setHasServerKey(true);
-        })
-        .catch(() => {});
+      // 2. Check server environment config (Gemini API key & Supabase credentials)
+      try {
+        const configRes = await fetch('/api/config');
+        if (configRes.ok) {
+          const configData = await configRes.json();
+          if (configData?.hasServerKey) setHasServerKey(true);
+          if (configData?.supabaseUrl && configData?.supabaseAnonKey) {
+            setRuntimeSupabaseConfig(configData.supabaseUrl, configData.supabaseAnonKey);
+          }
+        }
+      } catch (err) {
+        console.warn('Config fetch error:', err);
+      }
 
       const loadedSettings = getStoredSettings();
       setSettings(loadedSettings);

@@ -1,4 +1,4 @@
--- ==============================================================================
+export const SUPABASE_SCHEMA_SQL = `-- ==============================================================================
 -- CHIPMIND AI JOURNAL DATABASE SCHEMA (SUPABASE POSTGRESQL + PGVECTOR)
 -- ==============================================================================
 -- Run this entire script in your Supabase Dashboard -> SQL Editor -> Click 'Run'.
@@ -105,3 +105,4 @@ begin
   limit match_count;
 end;
 $$;
+`;
