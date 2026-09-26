@@ -2,53 +2,61 @@
 
 @layer base {
   :root {
-    --bg-main: #fcfbf9;
-    --bg-card: #ffffff;
-    --bg-subtle: #f5f2eb;
-    --text-primary: #1f2421;
-    --text-secondary: #64748b;
-    --accent-sage: #5b7065;
-    --accent-sage-light: #e8edea;
-    --accent-terracotta: #c86d51;
-    --accent-amber: #e09f3e;
-    --accent-blue: #4a7c85;
-    --border-color: #ebe7df;
-  }
-
-  .dark {
-    --bg-main: #131415;
-    --bg-card: #1c1d1f;
-    --bg-subtle: #242628;
-    --text-primary: #f3f4f6;
-    --text-secondary: #9ca3af;
-    --accent-sage: #7d9d8c;
-    --accent-sage-light: #1e2823;
-    --accent-terracotta: #e07a5f;
-    --accent-amber: #f4a261;
-    --accent-blue: #5fa8b8;
-    --border-color: #2b2e31;
+    --bg-main: #090d16;
+    --bg-card: #101626;
+    --bg-card-hover: #141d33;
+    --bg-subtle: #172138;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-cyan: #06b6d4;
+    --accent-cyan-glow: #22d3ee;
+    --accent-purple: #a855f7;
+    --accent-gold: #f59e0b;
+    --accent-blue: #3b82f6;
+    --border-color: #1e293b;
+    --border-highlight: #334155;
   }
 }
 
 body {
-  background-color: var(--bg-main);
-  color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #090d16;
+  color: #f8fafc;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom smooth scrollbar */
+/* Custom tech scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #090d16;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(140, 140, 140, 0.25);
+  background: #1e293b;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(140, 140, 140, 0.4);
+  background: #06b6d4;
+}
+
+/* Glow Utilities */
+.glow-cyan {
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
+}
+.glow-purple {
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.25);
+}
+.glow-gold {
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+}
+.battlestation-card {
+  background-color: #101626;
+  border: 1px solid #1e293b;
+  transition: all 0.2s ease-in-out;
+}
+.battlestation-card:hover {
+  border-color: rgba(6, 182, 212, 0.45);
+  box-shadow: 0 0 22px rgba(6, 182, 212, 0.12);
 }

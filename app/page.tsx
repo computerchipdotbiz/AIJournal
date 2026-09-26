@@ -36,6 +36,7 @@ import { WeeklyReviewModal } from '@/components/WeeklyReviewModal';
 import { SettingsModal } from '@/components/SettingsModal';
 import { PasscodeLock } from '@/components/PasscodeLock';
 import { LandingPage } from '@/components/LandingPage';
+import { ChipMindLogo } from '@/components/ChipMindLogo';
 
 export default function Home() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
@@ -188,13 +189,11 @@ export default function Home() {
   // Loading state while checking authentication
   if (isAuthChecking) {
     return (
-      <div className="min-h-screen bg-[#fcfbf9] flex items-center justify-center">
+      <div className="min-h-screen bg-[#090d16] flex items-center justify-center">
         <div className="text-center space-y-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#e8edea] text-[#5b7065] flex items-center justify-center mx-auto animate-pulse">
-            <Sparkles className="w-5 h-5 text-amber-500" />
-          </div>
-          <p className="text-xs text-[#64748b] font-medium">
-            Entering private journal...
+          <ChipMindLogo size={48} glow={true} className="mx-auto" />
+          <p className="text-xs font-mono text-cyan-400 tracking-widest animate-pulse">
+            INITIALIZING NEURAL CODEX...
           </p>
         </div>
       </div>
@@ -226,7 +225,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fcfbf9] text-[#1f2421] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#090d16] text-[#f8fafc] flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200 relative">
       {/* Top Navigation */}
       <Navbar
         activeTab={activeTab}
@@ -254,25 +253,25 @@ export default function Home() {
           />
         )}
 
-        {/* TAB 2: INSIGHTS & MOOD TRENDS */}
+        {/* TAB 2: INSIGHTS & MOOD TELEMETRY */}
         {activeTab === 'insights' && (
           <div className="space-y-8 animate-fadeIn">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-serif font-semibold text-[#1f2421]">
-                  Personal Growth Insights
+                <h1 className="text-2xl sm:text-3xl font-sans font-extrabold text-white tracking-tight">
+                  Personal Telemetry &amp; Metrics
                 </h1>
-                <p className="text-xs sm:text-sm text-[#64748b] mt-1">
-                  Track emotional trends, habits, and AI pattern recognition
+                <p className="text-xs sm:text-sm font-mono text-cyan-400/80 mt-1">
+                  Analyzing emotional frequency, cognitive patterns, and growth syntheses
                 </p>
               </div>
 
               <button
                 onClick={() => setIsWeeklyReviewOpen(true)}
-                className="flex items-center gap-2 px-5 py-2.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs sm:text-sm font-medium shadow-sm transition-all self-start sm:self-auto"
+                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-full text-xs sm:text-sm font-bold shadow-[0_0_15px_rgba(168,85,247,0.35)] transition-all self-start sm:self-auto"
               >
-                <Sparkles className="w-4 h-4 text-amber-300" />
-                <span>Weekly AI Synthesis</span>
+                <Sparkles className="w-4 h-4 text-purple-200" />
+                <span>Compile Weekly AI Synthesis</span>
               </button>
             </div>
 
@@ -280,34 +279,34 @@ export default function Home() {
 
             {/* Past Weekly Insights Feed */}
             {insights.length > 0 && (
-              <div className="space-y-4 pt-4 border-t border-[#ebe7df]">
-                <h2 className="text-base font-serif font-semibold text-[#1f2421]">
-                  Past Syntheses
+              <div className="space-y-4 pt-4 border-t border-[#1e293b]">
+                <h2 className="text-base font-sans font-bold text-white tracking-tight">
+                  Archived Syntheses
                 </h2>
                 <div className="grid grid-cols-1 gap-4">
                   {insights.map((insight) => (
                     <div
                       key={insight.id}
-                      className="bg-white p-5 rounded-3xl border border-[#ebe7df] space-y-3"
+                      className="bg-[#101626] p-5 rounded-3xl border border-[#1e293b] hover:border-purple-500/40 transition-all space-y-3 shadow-lg"
                     >
-                      <div className="flex items-center justify-between text-xs text-[#64748b]">
-                        <span className="flex items-center gap-1.5 font-medium">
-                          <Calendar className="w-3.5 h-3.5 text-[#5b7065]" />
+                      <div className="flex items-center justify-between text-xs text-slate-400">
+                        <span className="flex items-center gap-1.5 font-mono text-purple-400">
+                          <Calendar className="w-3.5 h-3.5" />
                           {new Date(insight.weekStartDate).toLocaleDateString()} &mdash;{' '}
                           {new Date(insight.weekEndDate).toLocaleDateString()}
                         </span>
-                        <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[11px] font-semibold border border-amber-200">
-                          AI Review
+                        <span className="px-2.5 py-0.5 rounded-full bg-purple-950/70 text-purple-300 text-[11px] font-mono font-bold border border-purple-500/30">
+                          AI SYNTHESIS
                         </span>
                       </div>
-                      <h3 className="font-serif font-semibold text-lg text-[#1f2421]">
+                      <h3 className="font-sans font-bold text-lg text-white">
                         {insight.title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-[#475569] leading-relaxed line-clamp-3">
+                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed line-clamp-3">
                         {insight.summary}
                       </p>
                       {insight.keyMindsetShift && (
-                        <div className="p-3 rounded-2xl bg-[#e8edea]/60 text-xs text-[#2c4035] italic">
+                        <div className="p-3 rounded-2xl bg-[#0d1322] border border-purple-500/20 text-xs font-mono text-purple-200 italic">
                           &ldquo;{insight.keyMindsetShift}&rdquo;
                         </div>
                       )}
@@ -324,23 +323,23 @@ export default function Home() {
           <div className="space-y-6 animate-fadeIn">
             {/* API Key prompt banner if missing */}
             {!settings.geminiApiKey && !hasServerKey && (
-              <div className="p-4 rounded-3xl bg-amber-50 border border-amber-200 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+              <div className="p-4 rounded-3xl bg-amber-950/40 border border-amber-500/40 text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-2xl bg-amber-100 text-amber-700">
+                  <div className="p-2 rounded-2xl bg-amber-900/60 text-amber-400 border border-amber-500/30">
                     <Key className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-semibold text-amber-900">
-                      Add your free Gemini API Key for AI reflections
+                    <h4 className="text-xs font-bold text-amber-300">
+                      Configure your free Gemini API Key for neural mirror reflection
                     </h4>
-                    <p className="text-[11px] text-amber-800">
-                      Get unlimited free Socratic feedback and automated summaries in seconds.
+                    <p className="text-[11px] text-amber-200/80">
+                      Unlocks unlimited Socratic feedback, reflection synthesis, and insights.
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsSettingsOpen(true)}
-                  className="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-xs font-semibold shrink-0 transition-colors"
+                  className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-full text-xs shrink-0 transition-colors shadow-sm"
                 >
                   Configure in Settings
                 </button>
@@ -349,35 +348,35 @@ export default function Home() {
 
             {/* Draft Recovery Alert */}
             {activeDraft && (
-              <div className="p-4 rounded-3xl bg-[#e8edea] border border-[#5b7065]/40 text-[#2c4035] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs animate-fadeIn">
+              <div className="p-4 rounded-3xl bg-cyan-950/50 border border-cyan-500/40 text-cyan-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-[0_0_15px_rgba(6,182,212,0.15)] animate-fadeIn">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-2xl bg-white text-[#5b7065] shadow-2xs">
+                  <div className="p-2 rounded-2xl bg-cyan-900/60 text-cyan-300 border border-cyan-500/30 shadow-xs">
                     <BookmarkCheck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-semibold text-[#1f2421]">
-                      You have an unsaved reflection draft
+                    <h4 className="text-xs font-bold text-white font-mono">
+                      Unsaved Reflection Draft Found in Cache
                     </h4>
-                    <p className="text-[11px] text-[#475569]">
+                    <p className="text-[11px] text-cyan-300/80">
                       {activeDraft.inputText
                         ? `"${activeDraft.inputText.slice(0, 65)}..."`
-                        : 'Unfinished thoughts from your previous session.'}
+                        : 'Unfinished thoughts stored from your previous session.'}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => setActiveTab('new')}
-                    className="px-4 py-1.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs font-semibold shadow-xs transition-colors"
+                    className="px-4 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-full text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)] transition-colors"
                   >
-                    Resume Writing
+                    Resume Log
                   </button>
                   <button
                     onClick={() => {
                       clearStoredDraft();
                       setActiveDraft(null);
                     }}
-                    className="p-1.5 text-[#64748b] hover:text-red-600 rounded-full transition-colors"
+                    className="p-1.5 text-slate-400 hover:text-rose-400 rounded-full transition-colors"
                     title="Discard Draft"
                   >
                     <X className="w-4 h-4" />
@@ -386,25 +385,26 @@ export default function Home() {
               </div>
             )}
 
-            {/* Start a reflection quick card */}
+            {/* Start a reflection quick hero card */}
             <div
               onClick={() => setActiveTab('new')}
-              className="bg-white p-5 sm:p-6 rounded-3xl border border-[#ebe7df] hover:border-[#5b7065]/40 cursor-pointer shadow-xs hover:shadow-sm transition-all group"
+              className="bg-gradient-to-r from-[#101626] via-[#131b2e] to-[#101626] p-5 sm:p-6 rounded-3xl border border-[#1e293b] hover:border-cyan-500/50 cursor-pointer shadow-lg hover:shadow-[0_0_25px_rgba(6,182,212,0.18)] transition-all group relative overflow-hidden"
             >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 text-xs font-medium text-[#5b7065]">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Interactive Reflection</span>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none -z-0" />
+              <div className="flex items-center justify-between mb-2 relative z-10">
+                <div className="flex items-center gap-2 text-xs font-mono font-bold text-cyan-400">
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+                  <span>INITIALIZE NEURAL REFLECTION</span>
                 </div>
-                <span className="text-xs text-[#64748b] group-hover:text-[#5b7065] transition-colors">
-                  Tap to begin &rarr;
+                <span className="text-xs font-mono text-cyan-400/80 group-hover:text-cyan-300 transition-colors">
+                  START &rarr;
                 </span>
               </div>
-              <h2 className="text-lg sm:text-xl font-serif text-[#1f2421] font-semibold mb-1">
-                What&apos;s on your mind today?
+              <h2 className="text-lg sm:text-xl font-sans text-white font-extrabold mb-1 tracking-tight relative z-10">
+                What&apos;s compiling in your mind today?
               </h2>
-              <p className="text-xs sm:text-sm text-[#64748b]">
-                Reflect with thoughtful Socratic questions, voice dictation, and emotional clarity.
+              <p className="text-xs sm:text-sm text-slate-400 relative z-10">
+                Decompile raw thoughts with thoughtful Socratic inquiry, voice dictation, and photo memories.
               </p>
             </div>
 
@@ -417,37 +417,37 @@ export default function Home() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search past thoughts, summaries, or keywords..."
-                      className="w-full pl-9 pr-4 py-2.5 bg-white rounded-2xl border border-[#ebe7df] focus:border-[#5b7065] focus:outline-none focus:ring-2 focus:ring-[#5b7065]/15 text-xs text-[#1f2421]"
+                      placeholder="Search past reflections, logs, or keywords..."
+                      className="w-full pl-9 pr-4 py-2.5 bg-[#101626] rounded-2xl border border-[#1e293b] focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 text-xs font-mono text-white placeholder-slate-500"
                     />
-                    <Search className="w-4 h-4 text-[#94a3b8] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   </div>
                 </div>
 
                 {/* Filter tags pills */}
                 {allTags.length > 0 && (
                   <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-                    <span className="text-[11px] text-[#64748b] mr-1 flex items-center gap-1">
-                      <Filter className="w-3 h-3" /> Filter:
+                    <span className="text-[11px] font-mono text-slate-500 mr-1 flex items-center gap-1">
+                      <Filter className="w-3 h-3 text-cyan-400" /> FILTER:
                     </span>
                     <button
                       onClick={() => setSelectedTag('all')}
-                      className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                      className={`px-3 py-1 rounded-full text-xs font-mono font-bold transition-all ${
                         selectedTag === 'all'
-                          ? 'bg-[#5b7065] text-white'
-                          : 'bg-white border border-[#ebe7df] text-[#64748b] hover:bg-[#f5f2eb]'
+                          ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-[0_0_10px_rgba(6,182,212,0.35)]'
+                          : 'bg-[#101626] border border-[#1e293b] text-slate-400 hover:text-white hover:border-slate-700'
                       }`}
                     >
-                      All
+                      ALL
                     </button>
                     {allTags.map((tag) => (
                       <button
                         key={tag}
                         onClick={() => setSelectedTag(tag)}
-                        className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                        className={`px-3 py-1 rounded-full text-xs font-mono transition-all ${
                           selectedTag === tag
-                            ? 'bg-[#5b7065] text-white'
-                            : 'bg-white border border-[#ebe7df] text-[#64748b] hover:bg-[#f5f2eb]'
+                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold shadow-[0_0_10px_rgba(6,182,212,0.35)]'
+                            : 'bg-[#101626] border border-[#1e293b] text-slate-400 hover:text-white hover:border-slate-700'
                         }`}
                       >
                         #{tag}
@@ -460,8 +460,8 @@ export default function Home() {
 
             {/* Entries Feed */}
             {isLoading ? (
-              <div className="py-12 text-center text-xs text-[#64748b]">
-                Loading your reflections...
+              <div className="py-12 text-center text-xs font-mono text-cyan-400 animate-pulse">
+                Decrypting and compiling your entries...
               </div>
             ) : filteredEntries.length > 0 ? (
               <div className="space-y-4">
@@ -474,30 +474,30 @@ export default function Home() {
                 ))}
               </div>
             ) : entries.length > 0 ? (
-              <div className="py-12 text-center bg-white rounded-3xl border border-[#ebe7df] p-6">
-                <p className="text-xs text-[#64748b]">
-                  No journal entries found matching &ldquo;{searchQuery}&rdquo;.
+              <div className="py-12 text-center bg-[#101626] rounded-3xl border border-[#1e293b] p-6">
+                <p className="text-xs font-mono text-slate-400">
+                  No logs found matching query &ldquo;{searchQuery}&rdquo;.
                 </p>
               </div>
             ) : (
-              <div className="py-16 text-center bg-white rounded-3xl border border-[#ebe7df] p-8 space-y-4">
-                <div className="w-14 h-14 mx-auto rounded-3xl bg-[#e8edea] text-[#5b7065] flex items-center justify-center">
+              <div className="py-16 text-center bg-[#101626] rounded-3xl border border-[#1e293b] p-8 space-y-4 shadow-xl">
+                <div className="w-14 h-14 mx-auto rounded-3xl bg-cyan-950/60 border border-cyan-500/40 text-cyan-400 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.2)]">
                   <BookOpen className="w-7 h-7" />
                 </div>
                 <div className="max-w-sm mx-auto">
-                  <h3 className="font-serif font-semibold text-lg text-[#1f2421]">
-                    Your journal is a blank canvas
+                  <h3 className="font-sans font-bold text-lg text-white">
+                    Codex is ready for its first entry
                   </h3>
-                  <p className="text-xs text-[#64748b] mt-1">
-                    Start your first conversation with the AI mirror. Write a thought, unload mental clutter, or set morning intentions.
+                  <p className="text-xs text-slate-400 mt-1">
+                    Initialize your first conversation with the AI mirror. Decompile a thought, vent mental clutter, or set daily quests.
                   </p>
                 </div>
                 <button
                   onClick={() => setActiveTab('new')}
-                  className="px-6 py-2.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full font-medium text-xs shadow-sm transition-all inline-flex items-center gap-2"
+                  className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-full text-xs shadow-[0_0_15px_rgba(6,182,212,0.35)] transition-all inline-flex items-center gap-2"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span>Write First Reflection</span>
+                  <Plus className="w-4 h-4 stroke-[2.5]" />
+                  <span>Log First Reflection</span>
                 </button>
               </div>
             )}

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Flame, Sparkles, TrendingUp, Heart } from 'lucide-react';
+import { Flame, Sparkles, TrendingUp, Activity } from 'lucide-react';
 import { JournalEntry } from '@/lib/types';
 
 interface MoodChartProps {
@@ -77,7 +77,10 @@ export const MoodChart: React.FC<MoodChartProps> = ({ entries }) => {
   const getPoints = () => {
     if (sortedEntries.length === 0) return '';
     if (sortedEntries.length === 1) {
-      const y = chartHeight - padding - ((sortedEntries[0].moodScore - 1) / 9) * (chartHeight - padding * 2);
+      const y =
+        chartHeight -
+        padding -
+        ((sortedEntries[0].moodScore - 1) / 9) * (chartHeight - padding * 2);
       return `${padding},${y} ${chartWidth - padding},${y}`;
     }
 
@@ -96,51 +99,51 @@ export const MoodChart: React.FC<MoodChartProps> = ({ entries }) => {
     <div className="space-y-6">
       {/* Stat Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-white p-4 rounded-3xl border border-[#ebe7df] flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+        <div className="bg-[#101626] p-4 rounded-3xl border border-[#1e293b] hover:border-amber-500/40 flex items-center gap-3.5 shadow-lg transition-all">
+          <div className="w-10 h-10 rounded-2xl bg-amber-950/70 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow-[0_0_12px_rgba(245,158,11,0.25)]">
             <Flame className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-xl font-semibold text-[#1f2421]">
-              {calculateStreak()} {calculateStreak() === 1 ? 'day' : 'days'}
+            <div className="text-xl font-mono font-bold text-white">
+              {calculateStreak()} {calculateStreak() === 1 ? 'DAY' : 'DAYS'}
             </div>
-            <div className="text-xs text-[#64748b]">Reflection Streak</div>
+            <div className="text-xs font-mono text-amber-400/80">QUEST STREAK</div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-3xl border border-[#ebe7df] flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <Heart className="w-5 h-5" />
+        <div className="bg-[#101626] p-4 rounded-3xl border border-[#1e293b] hover:border-cyan-500/40 flex items-center gap-3.5 shadow-lg transition-all">
+          <div className="w-10 h-10 rounded-2xl bg-cyan-950/70 border border-cyan-500/40 text-cyan-400 flex items-center justify-center shadow-[0_0_12px_rgba(6,182,212,0.25)]">
+            <Activity className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-xl font-semibold text-[#1f2421]">
-              {avgMood} <span className="text-xs text-[#94a3b8]">/ 10</span>
+            <div className="text-xl font-mono font-bold text-white">
+              {avgMood} <span className="text-xs text-slate-500">/ 10</span>
             </div>
-            <div className="text-xs text-[#64748b]">Average Mood</div>
+            <div className="text-xs font-mono text-cyan-400/80">AVG TELEMETRY</div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-3xl border border-[#ebe7df] flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+        <div className="bg-[#101626] p-4 rounded-3xl border border-[#1e293b] hover:border-purple-500/40 flex items-center gap-3.5 shadow-lg transition-all">
+          <div className="w-10 h-10 rounded-2xl bg-purple-950/70 border border-purple-500/40 text-purple-400 flex items-center justify-center shadow-[0_0_12px_rgba(168,85,247,0.25)]">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-xl font-semibold text-[#1f2421]">
+            <div className="text-xl font-mono font-bold text-white">
               {entries.length}
             </div>
-            <div className="text-xs text-[#64748b]">Total Reflections</div>
+            <div className="text-xs font-mono text-purple-400/80">TOTAL LOGS</div>
           </div>
         </div>
       </div>
 
       {/* Mood Trend Timeline Card */}
-      <div className="bg-white p-5 sm:p-6 rounded-3xl border border-[#ebe7df]">
+      <div className="bg-[#101626] p-5 sm:p-6 rounded-3xl border border-[#1e293b] shadow-xl">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 text-sm font-semibold text-[#1f2421]">
-            <TrendingUp className="w-4 h-4 text-[#5b7065]" />
-            <span>Mood Trend Over Time</span>
+          <div className="flex items-center gap-2 text-sm font-bold text-white">
+            <TrendingUp className="w-4 h-4 text-cyan-400" />
+            <span>Emotional Waveform / Telemetry Graph</span>
           </div>
-          <span className="text-xs text-[#64748b]">Recent entries</span>
+          <span className="text-xs font-mono text-cyan-400/80">[RECENT 14 SESSIONS]</span>
         </div>
 
         {sortedEntries.length > 1 ? (
@@ -150,10 +153,15 @@ export const MoodChart: React.FC<MoodChartProps> = ({ entries }) => {
               className="w-full h-32 overflow-visible"
             >
               <defs>
-                <linearGradient id="moodGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#5b7065" stopOpacity="0.25" />
-                  <stop offset="100%" stopColor="#5b7065" stopOpacity="0.0" />
+                <linearGradient id="cyberWaveGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#00f0ff" />
+                  <stop offset="50%" stopColor="#3b82f6" />
+                  <stop offset="100%" stopColor="#a855f7" />
                 </linearGradient>
+                <filter id="neonLineGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="2" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
               </defs>
 
               {/* Horizontal guideline */}
@@ -162,17 +170,18 @@ export const MoodChart: React.FC<MoodChartProps> = ({ entries }) => {
                 y1={chartHeight / 2}
                 x2={chartWidth - padding}
                 y2={chartHeight / 2}
-                stroke="#f1f0ea"
+                stroke="#1e293b"
                 strokeDasharray="4 4"
               />
 
               {/* Trend Polyline */}
               <polyline
                 fill="none"
-                stroke="#5b7065"
+                stroke="url(#cyberWaveGrad)"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                filter="url(#neonLineGlow)"
                 points={getPoints()}
               />
 
@@ -189,39 +198,39 @@ export const MoodChart: React.FC<MoodChartProps> = ({ entries }) => {
                     cx={x}
                     cy={y}
                     r="4"
-                    fill="#ffffff"
-                    stroke="#5b7065"
-                    strokeWidth="2"
+                    fill="#00f0ff"
+                    stroke="#ffffff"
+                    strokeWidth="1.5"
                   />
                 );
               })}
             </svg>
-            <div className="flex justify-between text-[11px] text-[#94a3b8] px-2 pt-2 border-t border-[#f5f2eb]">
-              <span>Earlier</span>
-              <span>Latest</span>
+            <div className="flex justify-between text-[11px] font-mono text-slate-500 px-2 pt-2 border-t border-[#1e293b]">
+              <span>T-PAST</span>
+              <span>T-PRESENT</span>
             </div>
           </div>
         ) : (
-          <p className="text-xs text-[#94a3b8] py-8 text-center">
-            Write 2 or more journal reflections to generate your visual mood trend line.
+          <p className="text-xs font-mono text-slate-500 py-8 text-center">
+            Log 2 or more reflections to render your telemetry waveform.
           </p>
         )}
       </div>
 
       {/* Top Recurring Feelings */}
       {topEmotions.length > 0 && (
-        <div className="bg-white p-5 rounded-3xl border border-[#ebe7df]">
-          <h3 className="text-xs font-semibold text-[#64748b] uppercase tracking-wider mb-3">
-            Frequent Emotional States
+        <div className="bg-[#101626] p-5 rounded-3xl border border-[#1e293b] shadow-xl">
+          <h3 className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider mb-3">
+            Frequent Cognitive Nodes
           </h3>
           <div className="flex flex-wrap gap-2">
             {topEmotions.map(([emotion, count]) => (
               <span
                 key={emotion}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-[#f5f2eb] text-[#2c4035] flex items-center gap-1.5"
+                className="px-3 py-1 rounded-full text-xs font-mono font-medium bg-cyan-950/50 text-cyan-300 border border-cyan-500/30 flex items-center gap-2"
               >
                 <span className="capitalize">{emotion}</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#5b7065]/15 font-semibold">
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-200 font-bold border border-cyan-500/30">
                   {count}
                 </span>
               </span>

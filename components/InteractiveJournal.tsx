@@ -463,28 +463,28 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               JOURNAL_PROMPTS.find((p) => p.id === 'freeform') || JOURNAL_PROMPTS[0]
             )
           }
-          className="mb-4 p-5 rounded-3xl bg-gradient-to-r from-[#e8edea] to-[#f5f2eb] border border-[#5b7065]/30 hover:border-[#5b7065] cursor-pointer transition-all shadow-xs hover:shadow-sm group flex items-center justify-between"
+          className="mb-4 p-5 rounded-3xl bg-gradient-to-r from-cyan-950/60 via-[#101626] to-purple-950/60 border border-cyan-500/40 hover:border-cyan-400 cursor-pointer transition-all shadow-lg hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] group flex items-center justify-between"
         >
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-white text-[#5b7065] shadow-xs group-hover:scale-105 transition-transform">
+            <div className="p-3 rounded-2xl bg-[#090d16] border border-cyan-500/30 text-cyan-400 shadow-md group-hover:scale-105 transition-transform">
               <Feather className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-serif font-semibold text-[#1f2421] text-base group-hover:text-[#5b7065] transition-colors">
-                  Open Journal / Free Write
+                <h3 className="font-sans font-bold text-white text-base group-hover:text-cyan-300 transition-colors">
+                  Open Terminal / Free Write
                 </h3>
-                <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-[#5b7065] text-white">
-                  Fastest
+                <span className="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full bg-cyan-500 text-slate-950">
+                  INSTANT
                 </span>
               </div>
-              <p className="text-xs text-[#475569] mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 Type or dictate your thoughts freely. Save anytime with 1 click.
               </p>
             </div>
           </div>
-          <span className="text-xs font-semibold text-[#5b7065] hidden sm:inline-block">
-            Start writing &rarr;
+          <span className="text-xs font-mono font-bold text-cyan-400 hidden sm:inline-block group-hover:translate-x-1 transition-transform">
+            INITIALIZE &rarr;
           </span>
         </div>
 
@@ -493,17 +493,17 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
             const getIcon = () => {
               switch (prompt.icon) {
                 case 'Sun':
-                  return <Sun className="w-5 h-5 text-amber-500" />;
+                  return <Sun className="w-5 h-5 text-amber-400" />;
                 case 'Moon':
                   return <Moon className="w-5 h-5 text-indigo-400" />;
                 case 'Feather':
-                  return <Feather className="w-5 h-5 text-emerald-500" />;
+                  return <Feather className="w-5 h-5 text-emerald-400" />;
                 case 'Compass':
-                  return <Compass className="w-5 h-5 text-rose-500" />;
+                  return <Compass className="w-5 h-5 text-rose-400" />;
                 case 'BookOpen':
-                  return <BookOpen className="w-5 h-5 text-cyan-500" />;
+                  return <BookOpen className="w-5 h-5 text-cyan-400" />;
                 default:
-                  return <Sparkles className="w-5 h-5 text-[#5b7065]" />;
+                  return <Sparkles className="w-5 h-5 text-cyan-400" />;
               }
             };
 
@@ -511,16 +511,16 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               <button
                 key={prompt.id}
                 onClick={() => handleSelectPrompt(prompt)}
-                className="flex items-start gap-3.5 p-4 rounded-3xl bg-white border border-[#ebe7df] hover:border-[#5b7065]/40 hover:shadow-xs text-left transition-all group"
+                className="flex items-start gap-3.5 p-4 rounded-3xl bg-[#101626] border border-[#1e293b] hover:border-cyan-500/40 hover:shadow-[0_0_20px_rgba(6,182,212,0.12)] text-left transition-all group"
               >
-                <div className="p-2.5 rounded-2xl bg-[#f5f2eb] group-hover:scale-105 transition-transform">
+                <div className="p-2.5 rounded-2xl bg-[#090d16] border border-[#1e293b] group-hover:scale-105 transition-transform">
                   {getIcon()}
                 </div>
                 <div>
-                  <h3 className="font-medium text-[#1f2421] text-sm group-hover:text-[#5b7065] transition-colors">
+                  <h3 className="font-sans font-bold text-white text-sm group-hover:text-cyan-300 transition-colors">
                     {prompt.title}
                   </h3>
-                  <p className="text-xs text-[#64748b] mt-0.5 line-clamp-2">
+                  <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">
                     {prompt.subtitle}
                   </p>
                 </div>
@@ -536,10 +536,10 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
   if (synthesizedResult) {
     return (
       <div className="max-w-xl mx-auto px-4 py-8 animate-fadeIn">
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#ebe7df] shadow-sm">
-          <div className="flex items-center gap-2 text-[#5b7065] mb-2 font-medium text-xs uppercase tracking-wider">
+        <div className="bg-[#101626] p-6 sm:p-8 rounded-3xl border border-[#1e293b] shadow-2xl">
+          <div className="flex items-center gap-2 text-cyan-400 mb-2 font-mono text-xs uppercase tracking-wider">
             <CheckCircle2 className="w-4 h-4" />
-            <span>Ready to Save</span>
+            <span>Telemetry Compiled // Ready to Commit</span>
           </div>
 
           <input
@@ -549,12 +549,12 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               setSynthesizedResult({ ...synthesizedResult, title: e.target.value })
             }
             placeholder="Entry Title"
-            className="w-full text-2xl font-serif font-semibold text-[#1f2421] border-b border-transparent hover:border-[#ebe7df] focus:border-[#5b7065] focus:outline-none py-1 mb-4"
+            className="w-full text-2xl font-sans font-bold text-white border-b border-transparent hover:border-[#1e293b] focus:border-cyan-500 focus:outline-none py-1 mb-4 bg-transparent"
           />
 
           <div className="mb-5">
-            <label className="text-xs font-semibold text-[#64748b] block uppercase tracking-wider mb-1.5">
-              Summary
+            <label className="text-xs font-mono font-bold text-slate-400 block uppercase tracking-wider mb-1.5">
+              Synthesis Summary
             </label>
             <textarea
               rows={2}
@@ -562,17 +562,17 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               onChange={(e) =>
                 setSynthesizedResult({ ...synthesizedResult, summary: e.target.value })
               }
-              className="w-full text-sm text-[#334155] p-3 rounded-2xl bg-[#fcfbf9] border border-[#ebe7df] focus:outline-none focus:ring-2 focus:ring-[#5b7065]/20"
+              className="w-full text-sm text-slate-200 p-3 rounded-2xl bg-[#090d16] border border-[#1e293b] focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
             />
           </div>
 
           {/* Mood Slider */}
-          <div className="mb-5 p-4 rounded-2xl bg-[#f5f2eb]/60 border border-[#ebe7df]/80">
+          <div className="mb-5 p-4 rounded-2xl bg-[#0d1322] border border-[#1e293b]">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
-                Mood Score
+              <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+                Telemetry Score
               </span>
-              <span className="text-sm font-semibold text-[#2c4035] px-2.5 py-0.5 rounded-full bg-white border border-[#ebe7df]">
+              <span className="text-sm font-mono font-bold text-cyan-300 px-2.5 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/40">
                 {synthesizedResult.moodScore} / 10
               </span>
             </div>
@@ -587,20 +587,20 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                   moodScore: parseInt(e.target.value, 10),
                 })
               }
-              className="w-full accent-[#5b7065] cursor-pointer"
+              className="w-full accent-cyan-400 cursor-pointer"
             />
           </div>
 
           {/* Emotions & Tags */}
           <div className="mb-5">
-            <label className="text-xs font-semibold text-[#64748b] block uppercase tracking-wider mb-2">
-              Identified Emotions & Themes
+            <label className="text-xs font-mono font-bold text-slate-400 block uppercase tracking-wider mb-2">
+              Cognitive Nodes &amp; Leylines
             </label>
             <div className="flex flex-wrap gap-1.5">
               {synthesizedResult.emotions.map((emo, idx) => (
                 <span
                   key={idx}
-                  className="px-2.5 py-1 rounded-full text-xs font-medium bg-[#e8edea] text-[#2c4035]"
+                  className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-cyan-950/60 text-cyan-300 border border-cyan-500/30"
                 >
                   {emo}
                 </span>
@@ -608,7 +608,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               {synthesizedResult.tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="px-2.5 py-1 rounded-full text-xs font-medium bg-[#f5f2eb] text-[#64748b]"
+                  className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-purple-950/60 text-purple-300 border border-purple-500/30"
                 >
                   #{tag}
                 </span>
@@ -619,16 +619,16 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
           {/* Action Commitments */}
           {synthesizedResult.actionItems.length > 0 && (
             <div className="mb-6">
-              <label className="text-xs font-semibold text-[#64748b] block uppercase tracking-wider mb-2">
-                Actionable Takeaways
+              <label className="text-xs font-mono font-bold text-slate-400 block uppercase tracking-wider mb-2">
+                Quest Objectives / Action Items
               </label>
               <ul className="space-y-1.5">
                 {synthesizedResult.actionItems.map((item, idx) => (
                   <li
                     key={idx}
-                    className="text-xs text-[#334155] flex items-center gap-2 p-2 rounded-xl bg-[#fcfbf9] border border-[#ebe7df]"
+                    className="text-xs text-slate-200 flex items-center gap-2 p-2 rounded-xl bg-[#090d16] border border-[#1e293b]"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#5b7065]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -636,20 +636,20 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#ebe7df]">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1e293b]">
             <button
               onClick={() => setSynthesizedResult(null)}
-              className="px-4 py-2 text-sm text-[#64748b] hover:text-[#1f2421] font-medium"
+              className="px-4 py-2 text-sm text-slate-400 hover:text-white font-medium"
             >
               Back to writing
             </button>
             <button
               onClick={handleFinalSave}
               disabled={isSaving}
-              className="px-6 py-2.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full font-semibold text-sm shadow-sm transition-all disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 rounded-full font-bold text-sm shadow-[0_0_15px_rgba(6,182,212,0.35)] transition-all disabled:opacity-50 flex items-center gap-2"
             >
-              <CheckCircle2 className="w-4 h-4" />
-              <span>{isSaving ? 'Saving...' : 'Save to Journal'}</span>
+              <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
+              <span>{isSaving ? 'Committing...' : 'Commit to Codex'}</span>
             </button>
           </div>
         </div>
@@ -662,14 +662,14 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
     <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 sm:py-6 flex flex-col h-[calc(100dvh-4.25rem)] sm:h-[calc(100vh-5rem)]">
       {/* Draft Restored Banner */}
       {draftRestoredBanner && (
-        <div className="mb-3 p-2.5 rounded-2xl bg-[#e8edea] border border-[#5b7065]/30 text-[#2c4035] text-xs flex items-center justify-between animate-fadeIn">
-          <span className="flex items-center gap-1.5">
-            <BookmarkCheck className="w-4 h-4 text-[#5b7065]" />
-            Restored unfinished thoughts from your previous session
+        <div className="mb-3 p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-xs flex items-center justify-between animate-fadeIn">
+          <span className="flex items-center gap-1.5 font-mono">
+            <BookmarkCheck className="w-4 h-4 text-cyan-400" />
+            Restored active telemetry draft from previous session
           </span>
           <button
             onClick={() => setDraftRestoredBanner(false)}
-            className="p-1 text-[#5b7065] hover:text-[#1f2421]"
+            className="p-1 text-slate-400 hover:text-white"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -677,21 +677,24 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
       )}
 
       {/* Header bar */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#ebe7df] mb-3">
+      <div className="flex items-center justify-between pb-3 border-b border-[#1e293b] mb-3">
         <div className="flex items-center gap-2">
           <button
             onClick={handleBackNavigation}
-            className="p-1.5 text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb] rounded-full transition-colors"
+            className="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-[#101626] rounded-xl border border-transparent hover:border-[#1e293b] transition-colors"
             title="Back"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h2 className="text-sm font-semibold text-[#1f2421]">
-              {selectedPrompt.title}
+            <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
+              <span>{selectedPrompt.title}</span>
+              <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-cyan-950/60 text-cyan-400 border border-cyan-500/30">
+                ACTIVE
+              </span>
             </h2>
-            <p className="text-[11px] text-[#64748b]">
-              Reflect with AI mirror or save anytime
+            <p className="text-[11px] font-mono text-slate-400">
+              Reflect with AI mirror or commit anytime
             </p>
           </div>
         </div>
@@ -702,11 +705,11 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
           <button
             onClick={handleDirectSave}
             disabled={isSaving || !hasUserWritten}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs font-semibold shadow-xs transition-all disabled:opacity-40"
-            title="Save directly to your journal"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 rounded-xl text-xs font-bold shadow-md shadow-cyan-500/20 transition-all disabled:opacity-40"
+            title="Commit directly to your journal"
           >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>{isSaving ? 'Saving...' : 'Save Entry'}</span>
+            <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>{isSaving ? 'Committing...' : 'Commit'}</span>
           </button>
 
           {/* AI Synthesis Wrap-Up */}
@@ -714,17 +717,17 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
             <button
               onClick={handleSynthesizeAndWrapUp}
               disabled={isSynthesizing || isStreaming}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f5f2eb] hover:bg-[#ebe7df] text-[#2c4035] rounded-full text-xs font-medium border border-[#ebe7df] transition-all disabled:opacity-50 hidden sm:inline-flex"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#101626] hover:bg-[#151e34] text-cyan-300 rounded-xl text-xs font-mono font-medium border border-cyan-500/30 transition-all disabled:opacity-50 hidden sm:inline-flex shadow-xs"
               title="Get AI tags and summary"
             >
               {isSynthesizing ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
                   <span>Synthesizing...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                   <span>AI Review</span>
                 </>
               )}
@@ -735,14 +738,14 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
 
       {/* API Error Notification */}
       {apiError && (
-        <div className="p-3 mb-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between">
+        <div className="p-3 mb-3 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-200 text-xs flex items-center justify-between font-mono">
           <span className="flex items-center gap-1.5">
-            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
             {apiError}
           </span>
           <button
             onClick={onOpenSettings}
-            className="font-semibold underline ml-2 hover:text-amber-950 shrink-0"
+            className="font-semibold underline ml-2 hover:text-white shrink-0"
           >
             Settings
           </button>
@@ -759,16 +762,16 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
               className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
             >
               <div
-                className={`max-w-[85%] rounded-3xl p-4 text-sm leading-relaxed shadow-xs transition-all ${
+                className={`max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed transition-all ${
                   isUser
-                    ? 'bg-[#5b7065] text-white rounded-br-xs'
-                    : 'bg-white border border-[#ebe7df] text-[#1f2421] rounded-bl-xs'
+                    ? 'bg-gradient-to-r from-cyan-950/80 to-blue-950/80 border border-cyan-500/40 text-cyan-50 rounded-br-xs shadow-md shadow-cyan-950/40'
+                    : 'bg-[#101626] border border-[#1e293b] text-slate-200 rounded-bl-xs shadow-md'
                 }`}
               >
                 {!isUser && (
-                  <div className="flex items-center gap-1.5 text-xs text-[#5b7065] font-medium mb-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Reflection Mirror</span>
+                  <div className="flex items-center gap-1.5 text-[11px] font-mono text-cyan-400 font-medium mb-1.5 uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                    <span>Neural Mirror</span>
                   </div>
                 )}
                 <div className="whitespace-pre-wrap">{message.content}</div>
@@ -778,9 +781,9 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
         })}
 
         {isStreaming && (
-          <div className="flex items-center gap-2 text-xs text-[#64748b] italic pl-2">
-            <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#5b7065]" />
-            <span>Reflecting on your words...</span>
+          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 pl-2">
+            <RefreshCw className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+            <span>Analyzing cognitive telemetry...</span>
           </div>
         )}
 
@@ -788,22 +791,22 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
       </div>
 
       {/* Input Composer */}
-      <div className="mt-3 pt-2 border-t border-[#ebe7df]">
-        <div className="relative bg-white border border-[#ebe7df] focus-within:border-[#5b7065] focus-within:ring-3 focus-within:ring-[#5b7065]/15 rounded-3xl p-2 transition-all shadow-sm">
+      <div className="mt-3 pt-2 border-t border-[#1e293b]">
+        <div className="relative bg-[#101626]/90 border border-[#1e293b] focus-within:border-cyan-500/70 focus-within:ring-2 focus-within:ring-cyan-500/20 rounded-2xl p-2 transition-all shadow-lg">
           {/* Photo Preview Strip */}
           {photos.length > 0 && (
-            <div className="flex items-center gap-2 px-2 pt-1 pb-2 overflow-x-auto border-b border-[#f5f2eb] mb-1.5">
+            <div className="flex items-center gap-2 px-2 pt-1 pb-2 overflow-x-auto border-b border-[#1e293b] mb-1.5">
               {photos.map((photoUrl, idx) => (
                 <div key={idx} className="relative shrink-0 group">
                   <img
                     src={photoUrl}
-                    alt={`Photo ${idx + 1}`}
-                    className="w-14 h-14 object-cover rounded-2xl border border-[#ebe7df] shadow-2xs"
+                    alt={`Telemetry frame ${idx + 1}`}
+                    className="w-14 h-14 object-cover rounded-xl border border-cyan-500/30 shadow-xs"
                   />
                   <button
                     type="button"
                     onClick={() => handleRemovePhoto(idx)}
-                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#1f2421]/80 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-[10px] transition-colors shadow-xs"
+                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-950/90 border border-rose-500/60 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-[10px] transition-colors shadow-xs"
                     title="Remove photo"
                   >
                     <X className="w-3 h-3" />
@@ -814,11 +817,11 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-14 h-14 rounded-2xl border-2 border-dashed border-[#ebe7df] hover:border-[#5b7065] text-[#94a3b8] hover:text-[#5b7065] flex flex-col items-center justify-center text-[10px] transition-colors shrink-0"
-                  title="Add more photos"
+                  className="w-14 h-14 rounded-xl border-2 border-dashed border-[#1e293b] hover:border-cyan-500/60 text-slate-500 hover:text-cyan-400 flex flex-col items-center justify-center text-[10px] transition-colors shrink-0 font-mono"
+                  title="Attach memory image"
                 >
                   <Plus className="w-4 h-4" />
-                  <span className="text-[9px]">Add</span>
+                  <span className="text-[9px]">Attach</span>
                 </button>
               )}
             </div>
@@ -835,11 +838,11 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                 handleSendMessage();
               }
             }}
-            placeholder="Write your thoughts here... (Enter to reflect with AI, Shift+Enter for new line)"
-            className="w-full px-3 py-1.5 text-sm bg-transparent resize-none focus:outline-none text-[#1f2421] placeholder:text-[#94a3b8]"
+            placeholder="Type your reflection... (Enter to query AI mirror, Shift+Enter for new line)"
+            className="w-full px-3 py-1.5 text-sm bg-transparent resize-none focus:outline-none text-slate-100 placeholder:text-slate-500 font-sans"
           />
 
-          <div className="flex items-center justify-between px-2 pt-1 border-t border-gray-100/60">
+          <div className="flex items-center justify-between px-2 pt-1 border-t border-[#1e293b]/60">
             <div className="flex items-center gap-1">
               <VoiceRecorder
                 onTranscription={handleVoiceTranscription}
@@ -859,12 +862,12 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isStreaming || photos.length >= 6}
-                className="p-1.5 text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb] rounded-full transition-colors relative"
-                title="Add photo from your day"
+                className="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-[#090d16] rounded-xl transition-colors relative"
+                title="Attach memory snapshot"
               >
-                <Camera className="w-4 h-4 text-[#5b7065]" />
+                <Camera className="w-4 h-4 text-cyan-400" />
                 {photos.length > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-[#5b7065] text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-cyan-500 text-slate-950 text-[9px] font-bold rounded-full flex items-center justify-center">
                     {photos.length}
                   </span>
                 )}
@@ -875,14 +878,14 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsEmojiOpen(!isEmojiOpen)}
-                  className={`p-1.5 rounded-full transition-colors ${
+                  className={`p-1.5 rounded-xl transition-colors ${
                     isEmojiOpen
-                      ? 'bg-[#e8edea] text-[#2c4035]'
-                      : 'text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb]'
+                      ? 'bg-amber-950/60 text-amber-300 border border-amber-500/40'
+                      : 'text-slate-400 hover:text-amber-400 hover:bg-[#090d16]'
                   }`}
                   title="Add emoji nuance"
                 >
-                  <Smile className="w-4 h-4 text-amber-500" />
+                  <Smile className="w-4 h-4 text-amber-400" />
                 </button>
 
                 <EmojiPicker
@@ -892,8 +895,8 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                 />
               </div>
 
-              <span className="text-[11px] text-[#94a3b8] hidden sm:inline">
-                Voice &amp; Nuance
+              <span className="text-[10px] font-mono text-slate-500 hidden sm:inline ml-1">
+                [AUDIO &amp; VISUAL INPUT]
               </span>
             </div>
 
@@ -903,11 +906,11 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                 type="button"
                 onClick={handleDirectSave}
                 disabled={isSaving || !hasUserWritten}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#e8edea] hover:bg-[#d8e3dc] text-[#2c4035] rounded-full text-xs font-semibold transition-all disabled:opacity-40 shadow-2xs"
-                title="Save this entry to your journal immediately"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-950/60 hover:bg-cyan-900/60 text-cyan-300 border border-cyan-500/30 rounded-xl text-xs font-mono font-semibold transition-all disabled:opacity-40 shadow-xs"
+                title="Commit this entry to your database"
               >
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#5b7065]" />
-                <span>{isSaving ? 'Saving...' : 'Save & Finish'}</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                <span>{isSaving ? 'Committing...' : 'Commit & Exit'}</span>
               </button>
 
               {/* Send / Reflect Button */}
@@ -915,7 +918,7 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                 type="button"
                 onClick={handleSendMessage}
                 disabled={!inputText.trim() || isStreaming}
-                className="flex items-center gap-1 px-3 py-1.5 bg-[#5b7065] hover:bg-[#485b51] disabled:opacity-40 text-white rounded-full text-xs font-medium transition-all shadow-xs"
+                className="flex items-center gap-1 px-3.5 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-40 text-slate-950 rounded-xl text-xs font-bold transition-all shadow-md shadow-cyan-500/20"
                 title="Reflect with AI"
               >
                 <span>Reflect</span>
@@ -928,17 +931,17 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
 
       {/* Confirmation Modal when Leaving with Unsaved Text */}
       {showExitConfirm && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-6 border border-[#ebe7df] shadow-xl space-y-4">
-            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[#101626] rounded-2xl max-w-sm w-full p-6 border border-[#1e293b] shadow-2xl space-y-4">
+            <div className="w-10 h-10 rounded-xl bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 flex items-center justify-center">
               <BookmarkCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-serif font-semibold text-lg text-[#1f2421]">
-                Save your reflection?
+              <h3 className="font-semibold text-lg text-white">
+                Commit active reflection?
               </h3>
-              <p className="text-xs text-[#64748b] mt-1">
-                You have thoughts written in this session. Would you like to save them to your journal before leaving?
+              <p className="text-xs text-slate-400 mt-1">
+                You have uncommitted thoughts in this session buffer. Would you like to save them to your codex before leaving?
               </p>
             </div>
             <div className="flex flex-col gap-2 pt-2">
@@ -947,9 +950,9 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                   setShowExitConfirm(false);
                   handleDirectSave();
                 }}
-                className="w-full py-2.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs font-semibold transition-all"
+                className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 rounded-xl text-xs font-bold transition-all shadow-md shadow-cyan-500/20"
               >
-                Save to Journal
+                Commit to Codex
               </button>
               <button
                 onClick={() => {
@@ -957,9 +960,9 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                   // keep draft in localStorage so they can resume later
                   onCancel();
                 }}
-                className="w-full py-2 bg-[#f5f2eb] hover:bg-[#ebe7df] text-[#475569] rounded-full text-xs font-medium transition-all"
+                className="w-full py-2 bg-[#090d16] hover:bg-[#151e34] text-slate-300 rounded-xl text-xs font-mono border border-[#1e293b] transition-all"
               >
-                Save as Draft & Exit
+                Save Cache &amp; Exit
               </button>
               <button
                 onClick={() => {
@@ -967,9 +970,9 @@ export const InteractiveJournal: React.FC<InteractiveJournalProps> = ({
                   clearStoredDraft();
                   onCancel();
                 }}
-                className="w-full py-2 text-[#94a3b8] hover:text-red-600 text-xs font-medium transition-all"
+                className="w-full py-2 text-slate-500 hover:text-rose-400 text-xs font-mono transition-all"
               >
-                Discard
+                Discard Buffer
               </button>
             </div>
           </div>

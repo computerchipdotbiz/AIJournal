@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   Loader2,
   Cloud,
+  Cpu,
 } from 'lucide-react';
 import { UserSettings, JournalEntry } from '@/lib/types';
 import { exportJournalAsJSON, exportJournalAsMarkdown } from '@/lib/storage';
@@ -90,46 +91,47 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-2xl max-h-[90vh] rounded-3xl border border-[#ebe7df] shadow-xl flex flex-col overflow-hidden animate-fadeIn">
+    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-[#101626] w-full max-w-2xl max-h-[90vh] rounded-2xl border border-[#1e293b] shadow-2xl flex flex-col overflow-hidden animate-fadeIn">
         {/* Top Header */}
-        <div className="px-6 py-4 border-b border-[#ebe7df] flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-[#1e293b] bg-[#0d1322] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold font-serif text-[#1f2421]">
-              Journal Settings
+            <Cpu className="w-4 h-4 text-cyan-400" />
+            <h2 className="text-sm font-semibold font-mono text-white tracking-wide uppercase">
+              System Settings &amp; Configuration
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-[#94a3b8] hover:text-[#1f2421] rounded-full hover:bg-gray-100 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-[#151e34] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-[#ebe7df] px-6 bg-[#fcfbf9] overflow-x-auto text-xs font-medium">
+        <div className="flex border-b border-[#1e293b] px-6 bg-[#090d16] overflow-x-auto text-xs font-mono">
           <button
             onClick={() => setActiveTab('ai')}
             className={`py-3 px-3 flex items-center gap-1.5 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'ai'
-                ? 'border-[#5b7065] text-[#2c4035] font-semibold'
-                : 'border-transparent text-[#64748b] hover:text-[#1f2421]'
+                ? 'border-cyan-400 text-cyan-300 font-semibold'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>AI Configuration</span>
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <span>AI Neural Core</span>
           </button>
 
           <button
             onClick={() => setActiveTab('database')}
             className={`py-3 px-3 flex items-center gap-1.5 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'database'
-                ? 'border-[#5b7065] text-[#2c4035] font-semibold'
-                : 'border-transparent text-[#64748b] hover:text-[#1f2421]'
+                ? 'border-cyan-400 text-cyan-300 font-semibold'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Database className="w-3.5 h-3.5" />
+            <Database className="w-3.5 h-3.5 text-cyan-400" />
             <span>Supabase Cloud Sync</span>
           </button>
 
@@ -137,52 +139,52 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             onClick={() => setActiveTab('security')}
             className={`py-3 px-3 flex items-center gap-1.5 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'security'
-                ? 'border-[#5b7065] text-[#2c4035] font-semibold'
-                : 'border-transparent text-[#64748b] hover:text-[#1f2421]'
+                ? 'border-cyan-400 text-cyan-300 font-semibold'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Lock className="w-3.5 h-3.5" />
-            <span>Passcode Privacy</span>
+            <Lock className="w-3.5 h-3.5 text-cyan-400" />
+            <span>PIN Vault</span>
           </button>
 
           <button
             onClick={() => setActiveTab('hosting')}
             className={`py-3 px-3 flex items-center gap-1.5 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'hosting'
-                ? 'border-[#5b7065] text-[#2c4035] font-semibold'
-                : 'border-transparent text-[#64748b] hover:text-[#1f2421]'
+                ? 'border-cyan-400 text-cyan-300 font-semibold'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Globe className="w-3.5 h-3.5" />
-            <span>Custom Domain & Free Host</span>
+            <Globe className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Custom Host &amp; DNS</span>
           </button>
 
           <button
             onClick={() => setActiveTab('export')}
             className={`py-3 px-3 flex items-center gap-1.5 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'export'
-                ? 'border-[#5b7065] text-[#2c4035] font-semibold'
-                : 'border-transparent text-[#64748b] hover:text-[#1f2421]'
+                ? 'border-cyan-400 text-cyan-300 font-semibold'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export Data</span>
+            <Download className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Codex Export</span>
           </button>
         </div>
 
         {/* Tab Content */}
-        <div className="flex-1 overflow-y-auto p-6 text-sm">
+        <div className="flex-1 overflow-y-auto p-6 text-sm bg-[#101626]">
           {/* 1. AI CONFIGURATION */}
           {activeTab === 'ai' && (
             <div className="space-y-5">
               {hasServerKey && (
-                <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center gap-2 font-medium">
-                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Gemini API Key is active from your Vercel server environment.</span>
+                <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-200 text-xs flex items-center gap-2 font-mono">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>[ONLINE] Gemini API Key active via Vercel server environment.</span>
                 </div>
               )}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748b] mb-1.5">
+                <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
                   Google Gemini API Key
                 </label>
                 <div className="flex gap-2">
@@ -192,18 +194,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       value={geminiKey}
                       onChange={(e) => setGeminiKey(e.target.value)}
                       placeholder="AIzaSy..."
-                      className="w-full pl-9 pr-4 py-2.5 rounded-2xl border border-[#ebe7df] focus:border-[#5b7065] focus:outline-none focus:ring-2 focus:ring-[#5b7065]/20 text-xs font-mono"
+                      className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-[#1e293b] bg-[#090d16] focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/20 text-xs font-mono text-white placeholder:text-slate-600"
                     />
-                    <Key className="w-4 h-4 text-[#94a3b8] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Key className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   </div>
                 </div>
-                <p className="text-xs text-[#64748b] mt-1.5 flex items-center gap-1">
+                <p className="text-xs text-slate-400 mt-1.5 flex items-center gap-1 font-mono">
                   <span>Get your free key with 1M tokens/min at</span>
                   <a
                     href="https://aistudio.google.com/app/apikey"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#5b7065] hover:underline font-medium inline-flex items-center gap-0.5"
+                    className="text-cyan-400 hover:underline font-medium inline-flex items-center gap-0.5"
                   >
                     Google AI Studio <ExternalLink className="w-3 h-3" />
                   </a>
@@ -211,7 +213,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748b] mb-2">
+                <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 mb-2">
                   Therapeutic Reflection Tone
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -219,37 +221,40 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     {
                       id: 'socratic',
                       name: 'Socratic Inquiry',
-                      desc: 'Asks probing questions to help uncover your own clarity.',
+                      desc: 'Asks probing questions to help uncover internal clarity.',
                     },
                     {
                       id: 'cbt',
                       name: 'CBT Reframing',
-                      desc: 'Spots cognitive distortions, catastrophic thinking & reframes.',
+                      desc: 'Detects cognitive distortions, black-and-white thinking & reframes.',
                     },
                     {
                       id: 'gentle',
                       name: 'Gentle & Nurturing',
-                      desc: 'Deep emotional warmth, acceptance, and gentle pacing.',
+                      desc: 'Empathetic validation, emotional warmth, and pacing.',
                     },
                     {
                       id: 'direct',
                       name: 'Direct & Action-Oriented',
-                      desc: 'Concise, clear, and highlights practical decisions.',
+                      desc: 'Crisp, high-signal, highlights actionable choices.',
                     },
                   ].map((style) => (
                     <div
                       key={style.id}
                       onClick={() => setReflectionStyle(style.id as any)}
-                      className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                      className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                         reflectionStyle === style.id
-                          ? 'border-[#5b7065] bg-[#e8edea]/40 text-[#1f2421]'
-                          : 'border-[#ebe7df] hover:border-gray-300 text-[#475569]'
+                          ? 'border-cyan-500 bg-cyan-950/40 text-cyan-100 shadow-sm shadow-cyan-950/50'
+                          : 'border-[#1e293b] bg-[#090d16] hover:border-[#334155] text-slate-300'
                       }`}
                     >
-                      <div className="font-semibold text-xs text-[#1f2421]">
-                        {style.name}
+                      <div className="font-semibold text-xs flex items-center justify-between">
+                        <span>{style.name}</span>
+                        {reflectionStyle === style.id && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" />
+                        )}
                       </div>
-                      <div className="text-[11px] text-[#64748b] mt-0.5">
+                      <div className="text-[11px] text-slate-400 mt-1 leading-relaxed">
                         {style.desc}
                       </div>
                     </div>
@@ -263,63 +268,67 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {activeTab === 'database' && (
             <div className="space-y-4">
               {isSupabaseConfigured() ? (
-                <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 leading-relaxed flex items-start gap-2.5">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-xs text-emerald-200 leading-relaxed flex items-start gap-2.5 font-mono">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-semibold text-emerald-950">Multi-Device Cloud Sync is Active</div>
-                    <div className="text-emerald-800 text-[11px] mt-0.5">
-                      Your journal entries and memories sync seamlessly across your phone, laptop, and desktop.
+                    <div className="font-semibold text-emerald-300 uppercase tracking-wide">
+                      Multi-Device Cloud Telemetry Online
+                    </div>
+                    <div className="text-emerald-400/80 text-[11px] mt-0.5 font-sans">
+                      Entries and memory snapshots sync seamlessly across your phone, laptop, and battlestation desktop.
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed flex items-start gap-2.5">
-                  <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-xs text-amber-200 leading-relaxed flex items-start gap-2.5 font-mono">
+                  <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-semibold text-amber-950">Local Storage Only (Single Device)</div>
-                    <div className="text-amber-800 text-[11px] mt-0.5">
-                      Entries are currently stored in this browser only. Connect free Supabase below so all your devices see the same journal.
+                    <div className="font-semibold text-amber-300 uppercase tracking-wide">
+                      Local Storage Cache Only
+                    </div>
+                    <div className="text-amber-400/80 text-[11px] mt-0.5 font-sans">
+                      Entries are stored in this browser only. Connect Supabase below so all your rigs see the same codex.
                     </div>
                   </div>
                 </div>
               )}
 
               {/* 3 Step Setup Guide */}
-              <div className="p-3.5 rounded-2xl bg-[#fcfbf9] border border-[#ebe7df] text-xs space-y-2">
-                <div className="font-semibold text-[#1f2421] flex items-center gap-1.5">
-                  <Cloud className="w-4 h-4 text-[#5b7065]" />
-                  <span>2-Minute Setup for Sync Across All Devices</span>
+              <div className="p-3.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs space-y-2 font-mono">
+                <div className="font-semibold text-slate-200 flex items-center gap-1.5">
+                  <Cloud className="w-4 h-4 text-cyan-400" />
+                  <span>Multi-Device Database Synchronization</span>
                 </div>
-                <ol className="list-decimal list-inside space-y-1.5 text-[#475569] text-[11px]">
+                <ol className="list-decimal list-inside space-y-1.5 text-slate-400 text-[11px] font-sans">
                   <li>
                     Create a free project at{' '}
                     <a
                       href="https://supabase.com"
                       target="_blank"
                       rel="noreferrer"
-                      className="text-[#5b7065] underline font-medium"
+                      className="text-cyan-400 underline font-medium"
                     >
                       supabase.com
                     </a>{' '}
-                    (100% free, no credit card required).
+                    (100% free tier, instant setup).
                   </li>
                   <li>
                     Open <strong>SQL Editor &rarr; New Query</strong>, paste the schema script below, and click <strong>Run</strong>.
                   </li>
                   <li>
-                    Copy your <strong>Project URL</strong> and <strong>Anon Key</strong> (found in Project Settings &rarr; API) into the boxes below or into Vercel Environment Variables.
+                    Copy your <strong>Project URL</strong> and <strong>Anon Key</strong> into the fields below or into Vercel Environment Variables.
                   </li>
                 </ol>
               </div>
 
               <div>
-                <div className="flex items-center justify-between text-xs text-[#64748b] mb-1">
+                <div className="flex items-center justify-between text-xs text-slate-400 mb-1 font-mono">
                   <span className="font-semibold uppercase tracking-wider text-[11px]">Database SQL Schema</span>
                   <a
                     href="https://supabase.com/dashboard"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#5b7065] hover:underline flex items-center gap-1 font-medium text-[11px]"
+                    className="text-cyan-400 hover:underline flex items-center gap-1 font-medium text-[11px]"
                   >
                     Open Supabase Dashboard <ExternalLink className="w-3 h-3" />
                   </a>
@@ -327,12 +336,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <button
                   type="button"
                   onClick={handleCopySchemaInstructions}
-                  className="w-full py-2.5 px-3 text-xs bg-[#f5f2eb] hover:bg-[#ebe7df] text-[#1f2421] rounded-xl flex items-center justify-center gap-1.5 transition-colors font-medium border border-[#ebe7df]"
+                  className="w-full py-2.5 px-3 text-xs bg-[#090d16] hover:bg-[#151e34] text-cyan-300 rounded-xl flex items-center justify-center gap-1.5 transition-colors font-mono font-medium border border-[#1e293b]"
                 >
                   {copiedSchema ? (
-                    <Check className="w-4 h-4 text-emerald-600" />
+                    <Check className="w-4 h-4 text-emerald-400" />
                   ) : (
-                    <Copy className="w-4 h-4 text-[#5b7065]" />
+                    <Copy className="w-4 h-4 text-cyan-400" />
                   )}
                   <span>
                     {copiedSchema
@@ -343,7 +352,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748b] mb-1">
+                <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 mb-1">
                   Supabase Project URL
                 </label>
                 <input
@@ -354,12 +363,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     setTestResult(null);
                   }}
                   placeholder="https://your-project.supabase.co"
-                  className="w-full px-3.5 py-2 rounded-2xl border border-[#ebe7df] focus:border-[#5b7065] focus:outline-none text-xs font-mono"
+                  className="w-full px-3.5 py-2 rounded-xl border border-[#1e293b] bg-[#090d16] focus:border-cyan-500 focus:outline-none text-xs font-mono text-white placeholder:text-slate-600"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748b] mb-1">
+                <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 mb-1">
                   Supabase Anon Public Key
                 </label>
                 <input
@@ -370,22 +379,22 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     setTestResult(null);
                   }}
                   placeholder="eyJhbGciOiJIUzI1NiIsIn..."
-                  className="w-full px-3.5 py-2 rounded-2xl border border-[#ebe7df] focus:border-[#5b7065] focus:outline-none text-xs font-mono"
+                  className="w-full px-3.5 py-2 rounded-xl border border-[#1e293b] bg-[#090d16] focus:border-cyan-500 focus:outline-none text-xs font-mono text-white placeholder:text-slate-600"
                 />
               </div>
 
               {testResult && (
                 <div
-                  className={`p-3 rounded-xl text-xs flex items-start gap-2 ${
+                  className={`p-3 rounded-xl text-xs flex items-start gap-2 font-mono ${
                     testResult.success
-                      ? 'bg-emerald-50 border border-emerald-200 text-emerald-900'
-                      : 'bg-rose-50 border border-rose-200 text-rose-900'
+                      ? 'bg-emerald-950/40 border border-emerald-500/40 text-emerald-200'
+                      : 'bg-rose-950/40 border border-rose-500/40 text-rose-200'
                   }`}
                 >
                   {testResult.success ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                   ) : (
-                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                    <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
                   )}
                   <div>{testResult.message}</div>
                 </div>
@@ -396,14 +405,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   type="button"
                   onClick={handleTestConnection}
                   disabled={isTesting || !supabaseUrl.trim() || !supabaseKey.trim()}
-                  className="px-4 py-2 text-xs border border-[#ebe7df] hover:border-[#5b7065] text-[#1f2421] rounded-xl flex items-center gap-1.5 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-xs border border-[#1e293b] hover:border-cyan-500/60 bg-[#090d16] hover:bg-[#151e34] text-cyan-300 rounded-xl flex items-center gap-1.5 transition-colors font-mono font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isTesting ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#5b7065]" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
                   ) : (
-                    <Database className="w-3.5 h-3.5 text-[#5b7065]" />
+                    <Database className="w-3.5 h-3.5 text-cyan-400" />
                   )}
-                  <span>{isTesting ? 'Testing...' : 'Test Connection'}</span>
+                  <span>{isTesting ? 'Testing Link...' : 'Test Connection'}</span>
                 </button>
               </div>
             </div>
@@ -412,37 +421,37 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* 3. PASSCODE PRIVACY */}
           {activeTab === 'security' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-[#fcfbf9] border border-[#ebe7df]">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-[#090d16] border border-[#1e293b]">
                 <div>
-                  <div className="font-semibold text-xs text-[#1f2421]">
-                    Passcode Lock
+                  <div className="font-semibold text-xs text-white font-mono">
+                    Device Security Lock
                   </div>
-                  <div className="text-xs text-[#64748b]">
-                    Require a PIN whenever opening the app
+                  <div className="text-xs text-slate-400 mt-0.5">
+                    Require secret PIN whenever opening the app
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={passcodeEnabled}
                   onChange={(e) => setPasscodeEnabled(e.target.checked)}
-                  className="w-4 h-4 accent-[#5b7065] cursor-pointer"
+                  className="w-4 h-4 accent-cyan-500 cursor-pointer"
                 />
               </div>
 
               {passcodeEnabled && (
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748b] mb-1">
-                    Set Your Secret Passcode
+                  <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                    Set Security PIN
                   </label>
                   <input
                     type="password"
                     value={newPasscode}
                     onChange={(e) => setNewPasscode(e.target.value)}
                     placeholder="Enter 4-digit or text PIN..."
-                    className="w-full px-4 py-2.5 rounded-2xl border border-[#ebe7df] focus:border-[#5b7065] focus:outline-none text-sm tracking-widest font-mono"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#1e293b] bg-[#090d16] focus:border-cyan-500 focus:outline-none text-sm tracking-widest font-mono text-white"
                   />
-                  <p className="text-[11px] text-[#94a3b8] mt-1">
-                    Remember this code. It guards your reflections on this device.
+                  <p className="text-[11px] text-slate-500 mt-1 font-mono">
+                    Keep this code safe. It guards your reflections on this device.
                   </p>
                 </div>
               )}
@@ -452,34 +461,34 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* 4. CUSTOM DOMAIN & FREE HOSTING GUIDE */}
           {activeTab === 'hosting' && (
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/70 text-xs text-emerald-950 leading-relaxed">
-                <div className="font-semibold text-sm mb-1 flex items-center gap-1.5 text-emerald-900">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  <span>100% Free Hosting + Free Custom Domain</span>
+              <div className="p-4 rounded-xl bg-cyan-950/40 border border-cyan-500/40 text-xs text-cyan-200 leading-relaxed font-mono">
+                <div className="font-semibold text-sm mb-1 flex items-center gap-1.5 text-cyan-300">
+                  <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                  <span>Free Vercel Cloud Node + SSL Custom Domain</span>
                 </div>
-                Deploying to Vercel costs $0/month forever and includes free automated SSL (HTTPS) for any domain name you own.
+                Zero cost hosting with automated edge deployment, HTTPS SSL certificates, and custom apex/subdomain routing.
               </div>
 
-              <div className="space-y-3 text-xs text-[#334155]">
-                <div className="p-3.5 rounded-2xl border border-[#ebe7df]">
-                  <span className="font-semibold text-[#1f2421] block mb-1">
+              <div className="space-y-3 text-xs text-slate-300">
+                <div className="p-3.5 rounded-xl border border-[#1e293b] bg-[#090d16]">
+                  <span className="font-semibold text-white block mb-1 font-mono text-cyan-300">
                     Step 1: Push code to GitHub
                   </span>
-                  Create a private GitHub repository and push this project folder.
+                  Create a private GitHub repository and push your project branch.
                 </div>
 
-                <div className="p-3.5 rounded-2xl border border-[#ebe7df]">
-                  <span className="font-semibold text-[#1f2421] block mb-1">
-                    Step 2: Connect to Vercel (Free)
+                <div className="p-3.5 rounded-xl border border-[#1e293b] bg-[#090d16]">
+                  <span className="font-semibold text-white block mb-1 font-mono text-cyan-300">
+                    Step 2: Connect to Vercel
                   </span>
-                  Go to <a href="https://vercel.com" target="_blank" rel="noreferrer" className="text-[#5b7065] underline font-medium">vercel.com</a>, log in with GitHub, click &ldquo;Add New Project&rdquo;, and select your repository. Add your `GEMINI_API_KEY` to Environment Variables.
+                  Go to <a href="https://vercel.com" target="_blank" rel="noreferrer" className="text-cyan-400 underline font-medium">vercel.com</a>, log in with GitHub, select your repository, and set environment variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `GEMINI_API_KEY`).
                 </div>
 
-                <div className="p-3.5 rounded-2xl border border-[#ebe7df]">
-                  <span className="font-semibold text-[#1f2421] block mb-1">
-                    Step 3: Add Your Custom Domain
+                <div className="p-3.5 rounded-xl border border-[#1e293b] bg-[#090d16]">
+                  <span className="font-semibold text-white block mb-1 font-mono text-cyan-300">
+                    Step 3: Route Your Custom Domain
                   </span>
-                  In your Vercel project dashboard, go to <strong>Settings &rarr; Domains</strong>, type your domain (e.g. `journal.yourname.com` or `yourdomain.com`), and add the 2 DNS records shown to your domain registrar (Namecheap, Cloudflare, etc.). Vercel verifies and activates SSL in 60 seconds!
+                  In your Vercel project, navigate to <strong>Settings &rarr; Domains</strong>, add your custom domain (e.g. `journal.yourdomain.com`), and configure the DNS CNAME/A records. Active within 60 seconds!
                 </div>
               </div>
             </div>
@@ -488,25 +497,25 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* 5. EXPORT DATA */}
           {activeTab === 'export' && (
             <div className="space-y-4">
-              <p className="text-xs text-[#64748b]">
-                You own 100% of your data. You can download all your reflections, AI summaries, and moods at any time.
+              <p className="text-xs text-slate-400 font-mono">
+                Full data ownership. Download your unencrypted telemetry reflections and metadata at any time.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => exportJournalAsMarkdown(entries)}
-                  className="p-4 rounded-2xl border border-[#ebe7df] hover:border-[#5b7065] text-left transition-all group flex items-start gap-3 bg-[#fcfbf9]"
+                  className="p-4 rounded-xl border border-[#1e293b] hover:border-cyan-500/50 text-left transition-all group flex items-start gap-3 bg-[#090d16]"
                 >
-                  <div className="p-2 rounded-xl bg-white text-[#5b7065] shadow-xs">
+                  <div className="p-2 rounded-lg bg-[#101626] text-cyan-400 border border-[#1e293b] shadow-xs group-hover:border-cyan-500/50">
                     <Download className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="font-semibold text-xs text-[#1f2421]">
-                      Export as Markdown (.md)
+                    <div className="font-semibold text-xs text-white font-mono group-hover:text-cyan-300 transition-colors">
+                      Export Markdown (.md)
                     </div>
-                    <div className="text-[11px] text-[#64748b] mt-0.5">
-                      Formatted readable text for Obsidian, Notion, or personal archives.
+                    <div className="text-[11px] text-slate-400 mt-0.5">
+                      Formatted readable text for Obsidian, Notion, or local archives.
                     </div>
                   </div>
                 </button>
@@ -514,17 +523,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <button
                   type="button"
                   onClick={() => exportJournalAsJSON(entries)}
-                  className="p-4 rounded-2xl border border-[#ebe7df] hover:border-[#5b7065] text-left transition-all group flex items-start gap-3 bg-[#fcfbf9]"
+                  className="p-4 rounded-xl border border-[#1e293b] hover:border-cyan-500/50 text-left transition-all group flex items-start gap-3 bg-[#090d16]"
                 >
-                  <div className="p-2 rounded-xl bg-white text-[#5b7065] shadow-xs">
+                  <div className="p-2 rounded-lg bg-[#101626] text-cyan-400 border border-[#1e293b] shadow-xs group-hover:border-cyan-500/50">
                     <Download className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="font-semibold text-xs text-[#1f2421]">
-                      Export as JSON (.json)
+                    <div className="font-semibold text-xs text-white font-mono group-hover:text-cyan-300 transition-colors">
+                      Export JSON (.json)
                     </div>
-                    <div className="text-[11px] text-[#64748b] mt-0.5">
-                      Complete raw database backup with conversation logs.
+                    <div className="text-[11px] text-slate-400 mt-0.5">
+                      Complete raw database snapshot with telemetry nodes and photos.
                     </div>
                   </div>
                 </button>
@@ -534,22 +543,22 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 border-t border-[#ebe7df] flex items-center justify-between bg-[#fcfbf9]">
-          <div className="text-xs text-emerald-700 font-medium">
-            {savedSuccess && '✓ Settings saved successfully!'}
+        <div className="px-6 py-3.5 border-t border-[#1e293b] flex items-center justify-between bg-[#0d1322]">
+          <div className="text-xs text-emerald-400 font-mono font-medium">
+            {savedSuccess && '✓ Configurations committed successfully!'}
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-xs text-[#64748b] hover:text-[#1f2421] font-medium"
+              className="px-4 py-2 text-xs text-slate-400 hover:text-white font-mono font-medium"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="px-5 py-2 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs font-semibold shadow-sm transition-all"
+              className="px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 rounded-xl text-xs font-mono font-bold shadow-md shadow-cyan-500/20 transition-all"
             >
-              Save Settings
+              Commit Settings
             </button>
           </div>
         </div>

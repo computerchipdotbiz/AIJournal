@@ -18,16 +18,16 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#fcfbf9",
+  themeColor: "#090d16",
 };
 
 export const metadata: Metadata = {
-  title: "ChipMind — AI Self-Reflection Journal",
+  title: "ChipMind — Personal AI Codex",
   description: "An interactive AI-powered journal for emotional clarity, CBT reframing, and personal growth insights.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "ChipMind",
   },
 };
@@ -42,7 +42,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#fcfbf9] text-[#1f2421]">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#090d16] text-[#f8fafc] selection:bg-cyan-500/30 selection:text-cyan-200">
+        {children}
+      </body>
     </html>
   );
 }

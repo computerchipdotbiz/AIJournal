@@ -96,9 +96,9 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
         type="button"
         disabled
         title="Speech recognition is not supported in this browser"
-        className="p-2 text-[#94a3b8] rounded-full hover:bg-gray-100 cursor-not-allowed"
+        className="p-1.5 text-slate-600 rounded-xl cursor-not-allowed"
       >
-        <AlertCircle className="w-5 h-5" />
+        <AlertCircle className="w-4 h-4" />
       </button>
     );
   }
@@ -108,20 +108,20 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       type="button"
       onClick={toggleRecording}
       disabled={disabled}
-      title={isRecording ? 'Stop voice recording' : 'Dictate by voice'}
-      className={`p-2.5 rounded-full transition-all relative flex items-center justify-center ${
+      title={isRecording ? 'Halt voice capture' : 'Dictate telemetry by voice'}
+      className={`p-1.5 rounded-xl transition-all relative flex items-center justify-center ${
         isRecording
-          ? 'bg-rose-500 text-white shadow-md animate-pulse'
-          : 'text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb]'
+          ? 'bg-rose-600 text-white shadow-md shadow-rose-600/40 animate-pulse border border-rose-400'
+          : 'text-slate-400 hover:text-cyan-400 hover:bg-[#090d16]'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       {isRecording ? (
         <>
-          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-400 rounded-full animate-ping" />
-          <MicOff className="w-5 h-5" />
+          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-400 rounded-full animate-ping" />
+          <MicOff className="w-4 h-4" />
         </>
       ) : (
-        <Mic className="w-5 h-5" />
+        <Mic className="w-4 h-4" />
       )}
     </button>
   );

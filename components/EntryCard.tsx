@@ -9,7 +9,8 @@ import {
   Trash2,
   Sparkles,
   CheckCircle2,
-  X
+  X,
+  Flame,
 } from 'lucide-react';
 import { JournalEntry } from '@/lib/types';
 
@@ -22,11 +23,22 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [lightboxPhoto, setLightboxPhoto] = useState<string | null>(null);
 
+  // WoW item rarity tier styling based on mood score
   const getMoodColor = (score: number) => {
-    if (score >= 8) return 'bg-amber-100 text-amber-800 border-amber-200';
-    if (score >= 6) return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-    if (score >= 4) return 'bg-blue-100 text-blue-800 border-blue-200';
-    return 'bg-rose-100 text-rose-800 border-rose-200';
+    if (score >= 8) {
+      // Legendary Amber / Gold
+      return 'bg-amber-950/60 text-amber-300 border-amber-500/40 shadow-[0_0_12px_rgba(245,158,11,0.25)]';
+    }
+    if (score >= 6) {
+      // Epic Purple / Nether
+      return 'bg-purple-950/60 text-purple-300 border-purple-500/40 shadow-[0_0_12px_rgba(168,85,247,0.25)]';
+    }
+    if (score >= 4) {
+      // Rare Arcane / Cyan
+      return 'bg-cyan-950/60 text-cyan-300 border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.25)]';
+    }
+    // Shadow / Fire Rose
+    return 'bg-rose-950/60 text-rose-300 border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.25)]';
   };
 
   const formattedDate = new Date(entry.date).toLocaleDateString('en-US', {
@@ -36,28 +48,32 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
   });
 
   return (
-    <article className="bg-white rounded-3xl border border-[#ebe7df] p-5 sm:p-6 shadow-xs hover:shadow-sm transition-all">
+    <article className="bg-[#101626] rounded-3xl border border-[#1e293b] p-5 sm:p-6 shadow-lg hover:border-cyan-500/40 hover:shadow-[0_0_24px_rgba(6,182,212,0.12)] transition-all">
       {/* Top Header */}
       <div className="flex items-center justify-between gap-3 mb-2.5">
-        <div className="flex items-center gap-2 text-xs text-[#64748b]">
-          <Calendar className="w-3.5 h-3.5 text-[#5b7065]" />
+        <div className="flex items-center gap-2 text-xs font-mono text-cyan-400/80">
+          <Calendar className="w-3.5 h-3.5 text-cyan-400" />
           <span>{formattedDate}</span>
           {entry.promptUsed && (
             <>
-              <span>•</span>
-              <span className="font-medium text-[#1f2421]">{entry.promptUsed}</span>
+              <span className="text-slate-600">•</span>
+              <span className="font-sans font-semibold text-slate-300">{entry.promptUsed}</span>
             </>
           )}
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Mood Badge */}
+          {/* Mood / Rarity Badge */}
           <span
-            className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getMoodColor(
+            className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border ${getMoodColor(
               entry.moodScore
             )}`}
           >
-            <Smile className="w-3.5 h-3.5" />
+            {entry.moodScore >= 8 ? (
+              <Flame className="w-3.5 h-3.5 text-amber-400" />
+            ) : (
+              <Smile className="w-3.5 h-3.5" />
+            )}
             <span>{entry.moodScore}/10</span>
           </span>
 
@@ -69,7 +85,7 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
               }
             }}
             title="Delete entry"
-            className="p-1.5 text-[#94a3b8] hover:text-red-500 rounded-full hover:bg-red-50 transition-colors"
+            className="p-1.5 text-slate-500 hover:text-rose-400 rounded-full hover:bg-rose-950/40 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -77,21 +93,21 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
       </div>
 
       {/* Title */}
-      <h2 className="text-lg font-serif font-semibold text-[#1f2421] mb-2 leading-snug">
+      <h2 className="text-lg font-sans font-bold text-white mb-2 leading-snug tracking-tight">
         {entry.title}
       </h2>
 
       {/* AI Summary Highlight */}
       {entry.summary && (
-        <div className="p-3 rounded-2xl bg-[#fcfbf9] border border-[#ebe7df]/70 mb-3 text-xs sm:text-sm text-[#334155] leading-relaxed flex items-start gap-2.5">
-          <Sparkles className="w-4 h-4 text-[#5b7065] shrink-0 mt-0.5" />
+        <div className="p-3 rounded-2xl bg-[#090d16] border border-cyan-500/25 mb-3 text-xs sm:text-sm text-cyan-100/90 leading-relaxed flex items-start gap-2.5 shadow-[inset_0_1px_4px_rgba(0,0,0,0.5)]">
+          <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
           <div>{entry.summary}</div>
         </div>
       )}
 
       {/* User Journal Content */}
       {entry.content && (
-        <div className="text-xs sm:text-sm text-[#1f2421] leading-relaxed whitespace-pre-wrap mb-3 p-3.5 rounded-2xl bg-[#fcfbf9]/60 border border-[#ebe7df]/60">
+        <div className="text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap mb-3 p-3.5 rounded-2xl bg-[#0d1322] border border-[#1e293b]">
           {entry.content}
         </div>
       )}
@@ -111,7 +127,7 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
             <div
               key={idx}
               onClick={() => setLightboxPhoto(photoUrl)}
-              className="relative overflow-hidden rounded-2xl border border-[#ebe7df] bg-[#f5f2eb] aspect-4/3 cursor-pointer group shadow-2xs hover:shadow-xs transition-all"
+              className="relative overflow-hidden rounded-2xl border border-[#1e293b] bg-[#090d16] aspect-4/3 cursor-pointer group shadow-md hover:border-cyan-500/50 transition-all"
             >
               <img
                 src={photoUrl}
@@ -124,16 +140,16 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
         </div>
       )}
 
-      {/* Action Items if any */}
+      {/* Action Commitments / Quest Objectives */}
       {entry.actionItems && entry.actionItems.length > 0 && (
         <div className="mb-3">
           <div className="flex flex-wrap gap-2">
             {entry.actionItems.map((item, idx) => (
               <span
                 key={idx}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs bg-emerald-50 text-emerald-800 border border-emerald-100 font-medium"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs bg-emerald-950/50 text-emerald-300 border border-emerald-500/40 font-mono"
               >
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span>{item}</span>
               </span>
             ))}
@@ -146,7 +162,7 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
         {entry.emotions.map((emo, idx) => (
           <span
             key={idx}
-            className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#e8edea] text-[#2c4035]"
+            className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-cyan-950/60 text-cyan-300 border border-cyan-500/30"
           >
             {emo}
           </span>
@@ -154,7 +170,7 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
         {entry.tags.map((tag, idx) => (
           <span
             key={idx}
-            className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#f5f2eb] text-[#64748b]"
+            className="px-2.5 py-0.5 rounded-full text-[11px] font-mono text-purple-300 bg-purple-950/50 border border-purple-500/30"
           >
             #{tag}
           </span>
@@ -163,12 +179,12 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
 
       {/* Expandable Conversation Transcript */}
       {entry.conversation && entry.conversation.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-[#f5f2eb]">
+        <div className="mt-3 pt-3 border-t border-[#1e293b]">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-1 text-xs font-medium text-[#5b7065] hover:text-[#485b51] transition-colors"
+            className="flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 transition-colors"
           >
-            <span>{isExpanded ? 'Hide reflection details' : 'View full reflection'}</span>
+            <span>{isExpanded ? 'Collapse Neural Transcript' : 'Expand Neural Transcript'}</span>
             {isExpanded ? (
               <ChevronUp className="w-3.5 h-3.5" />
             ) : (
@@ -177,13 +193,13 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
           </button>
 
           {isExpanded && (
-            <div className="mt-3 space-y-2.5 pl-2 border-l-2 border-[#5b7065]/30 animate-fadeIn">
+            <div className="mt-3 space-y-2.5 pl-3 border-l-2 border-cyan-500/40 animate-fadeIn">
               {entry.conversation.map((msg, i) => (
                 <div key={i} className="text-xs">
-                  <span className="font-semibold text-[#1f2421]">
-                    {msg.sender === 'user' ? 'You: ' : 'Mirror: '}
+                  <span className={`font-mono font-bold ${msg.sender === 'user' ? 'text-cyan-300' : 'text-purple-300'}`}>
+                    {msg.sender === 'user' ? '[USER]: ' : '[CHIPMIND]: '}
                   </span>
-                  <span className="text-[#475569]">{msg.content}</span>
+                  <span className="text-slate-300">{msg.content}</span>
                 </div>
               ))}
             </div>
@@ -195,7 +211,7 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
       {lightboxPhoto && (
         <div
           onClick={() => setLightboxPhoto(null)}
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -211,7 +227,7 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry, onDelete }) => {
             <img
               src={lightboxPhoto}
               alt="Full resolution journal photo"
-              className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl border border-white/10"
+              className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl border border-cyan-500/40"
             />
           </div>
         </div>

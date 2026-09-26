@@ -22,7 +22,7 @@ const EMOJI_CATEGORIES: EmojiCategory[] = [
   {
     id: 'laughter',
     name: 'Laughter & Humor',
-    icon: <Laugh className="w-3.5 h-3.5 text-amber-500" />,
+    icon: <Laugh className="w-3.5 h-3.5 text-amber-400" />,
     emojis: [
       '😂', '🤣', '💀', '😭', '😆', '😅', '🤪', '😜', '😝', '🤭',
       '😹', '🤡', '🙃', '🫠', '🙈', '🥴', '😈', '🪦', '🍿', '🤦', '🤷'
@@ -30,39 +30,39 @@ const EMOJI_CATEGORIES: EmojiCategory[] = [
   },
   {
     id: 'calm',
-    name: 'Calm & Gratitude',
-    icon: <Sparkles className="w-3.5 h-3.5 text-emerald-500" />,
+    name: 'Calm & Mana',
+    icon: <Sparkles className="w-3.5 h-3.5 text-cyan-400" />,
     emojis: ['😌', '🧘', '🤍', '✨', '🌱', '🕊️', '🌿', '🌸', '☀️', '☕', '🕯️', '🌈', '🍃', '🌊'],
   },
   {
     id: 'joy',
-    name: 'Joy & Warmth',
-    icon: <Sun className="w-3.5 h-3.5 text-amber-500" />,
+    name: 'Joy & Buffs',
+    icon: <Sun className="w-3.5 h-3.5 text-amber-400" />,
     emojis: ['😊', '😃', '🥰', '🥹', '🥳', '💖', '🫶', '🙌', '🎉', '🌟', '💛', '🌻', '🤩', '😻'],
   },
   {
     id: 'stress',
-    name: 'Tension & Overwhelm',
-    icon: <Zap className="w-3.5 h-3.5 text-rose-500" />,
+    name: 'Tension & Wipe',
+    icon: <Zap className="w-3.5 h-3.5 text-rose-400" />,
     emojis: ['🤯', '🫠', '😬', '😣', '😫', '😤', '😮‍💨', '🌪️', '⚡', '🪫', '💥', '⏳', '😵‍💫', '🤦'],
   },
   {
     id: 'tender',
     name: 'Sad & Vulnerable',
-    icon: <CloudRain className="w-3.5 h-3.5 text-indigo-400" />,
+    icon: <CloudRain className="w-3.5 h-3.5 text-purple-400" />,
     emojis: ['😔', '🥺', '😢', '😭', '💔', '🌧️', '🥀', '🩹', '🫂', '🕳️', '🍂', '😞', '😿', '🖤'],
   },
   {
     id: 'wonder',
     name: 'Thoughtful & Curious',
-    icon: <Smile className="w-3.5 h-3.5 text-cyan-500" />,
+    icon: <Smile className="w-3.5 h-3.5 text-cyan-400" />,
     emojis: ['🤔', '🙃', '😶', '😶‍🌫️', '🙄', '🧐', '🤷', '💭', '❓', '⚖️', '🧭', '🎭', '🪄', '🔮'],
   },
   {
     id: 'energy',
-    name: 'Action & Life',
-    icon: <Heart className="w-3.5 h-3.5 text-amber-600" />,
-    emojis: ['🎯', '🚀', '💡', '🔥', '💪', '🏆', '✅', '📖', '🎧', '🏃', '💻', '🌅', '🍕', '🏡'],
+    name: 'Action & Combat',
+    icon: <Heart className="w-3.5 h-3.5 text-amber-500" />,
+    emojis: ['🎯', '🚀', '💡', '🔥', '💪', '🏆', '✅', '📖', '🎧', '🏃', '💻', '🌅', '🍕', '⚔️'],
   },
 ];
 
@@ -103,16 +103,17 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
   return (
     <div
       ref={containerRef}
-      className="absolute bottom-full mb-2 left-0 sm:left-auto right-0 sm:right-auto sm:w-80 bg-white border border-[#ebe7df] rounded-3xl shadow-xl p-3 z-50 animate-fadeIn"
+      className="absolute bottom-full mb-2 left-0 sm:left-auto right-0 sm:right-auto sm:w-80 bg-[#101626] border border-[#1e293b] rounded-2xl shadow-2xl p-3 z-50 animate-fadeIn"
     >
       {/* Header */}
-      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#f5f2eb]">
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#1f2421]">
-          <span>Emotional Nuance Palette</span>
+      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#1e293b]">
+        <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-white uppercase tracking-wider">
+          <Smile className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Nuance &amp; Emoji Palette</span>
         </div>
         <button
           onClick={onClose}
-          className="p-1 text-[#94a3b8] hover:text-[#1f2421] rounded-full hover:bg-[#f5f2eb] transition-colors"
+          className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-[#151e34] transition-colors"
           title="Close"
         >
           <X className="w-3.5 h-3.5" />
@@ -120,15 +121,15 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
       </div>
 
       {/* Top Quick Favorites Bar */}
-      <div className="flex items-center justify-between px-1.5 py-1 mb-2 bg-[#fcfbf9] rounded-2xl border border-[#ebe7df]/60">
-        <span className="text-[10px] uppercase tracking-wider text-[#94a3b8] font-bold">Quick:</span>
+      <div className="flex items-center justify-between px-2 py-1 mb-2 bg-[#090d16] rounded-xl border border-[#1e293b]">
+        <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Fast:</span>
         <div className="flex items-center gap-1">
           {QUICK_FAVORITES.map((emoji, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => onSelectEmoji(emoji)}
-              className="w-7 h-7 flex items-center justify-center text-lg hover:bg-white rounded-lg transition-transform active:scale-125"
+              className="w-7 h-7 flex items-center justify-center text-lg hover:bg-[#151e34] rounded-lg transition-transform active:scale-125"
               title={`Insert ${emoji}`}
             >
               {emoji}
@@ -138,16 +139,16 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
       </div>
 
       {/* Category Pills */}
-      <div className="flex items-center gap-1 overflow-x-auto pb-2 mb-2 scrollbar-none">
+      <div className="flex items-center gap-1 overflow-x-auto pb-2 mb-2 scrollbar-none font-mono">
         {EMOJI_CATEGORIES.map((cat) => (
           <button
             key={cat.id}
             type="button"
             onClick={() => setActiveCategory(cat.id)}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all shrink-0 ${
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all shrink-0 ${
               activeCategory === cat.id
-                ? 'bg-[#5b7065] text-white shadow-2xs'
-                : 'bg-[#f5f2eb] text-[#64748b] hover:text-[#1f2421] hover:bg-[#ebe7df]'
+                ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-500/40 shadow-xs'
+                : 'bg-[#090d16] text-slate-400 hover:text-white hover:bg-[#151e34] border border-[#1e293b]'
             }`}
           >
             {cat.icon}
@@ -163,7 +164,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
             key={idx}
             type="button"
             onClick={() => onSelectEmoji(emoji)}
-            className="w-9 h-9 flex items-center justify-center text-xl rounded-xl hover:bg-[#f5f2eb] active:scale-120 transition-all select-none"
+            className="w-9 h-9 flex items-center justify-center text-xl rounded-xl hover:bg-[#090d16] active:scale-120 transition-all select-none"
             title={`Insert ${emoji}`}
           >
             {emoji}
@@ -172,9 +173,9 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
       </div>
 
       {/* Category Full Name footer */}
-      <div className="mt-2 pt-2 border-t border-[#f5f2eb] flex items-center justify-between text-[11px] text-[#64748b]">
-        <span>{currentCat.name}</span>
-        <span className="text-[10px] text-[#94a3b8]">Tap to insert</span>
+      <div className="mt-2 pt-2 border-t border-[#1e293b] flex items-center justify-between text-[11px] font-mono text-slate-400">
+        <span className="text-cyan-400">{currentCat.name}</span>
+        <span className="text-[10px] text-slate-500">Tap to inject</span>
       </div>
     </div>
   );

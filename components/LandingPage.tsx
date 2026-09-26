@@ -2,19 +2,19 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Sparkles,
   Lock,
   ArrowRight,
   ShieldCheck,
-  Feather,
+  Cpu,
   Mic,
   TrendingUp,
-  BookOpen,
   AlertCircle,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  Terminal,
 } from 'lucide-react';
 import Script from 'next/script';
+import { ChipMindLogo } from './ChipMindLogo';
 
 interface LandingPageProps {
   onLoginSuccess: (email: string) => void;
@@ -79,7 +79,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           if (renderedClientIdRef.current !== activeClientId || googleBtnRef.current.children.length === 0) {
             googleBtnRef.current.innerHTML = '';
             win.google.accounts.id.renderButton(googleBtnRef.current, {
-              theme: 'outline',
+              theme: 'filled_black',
               size: 'large',
               text: 'signin_with',
               shape: 'pill',
@@ -126,7 +126,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfbf9] text-[#1f2421] flex flex-col font-sans selection:bg-[#5b7065]/20">
+    <div className="min-h-screen bg-[#090d16] text-[#f8fafc] flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200 relative overflow-hidden">
+      {/* Background Ambient Lighting */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
       <Script
         src="https://accounts.google.com/gsi/client"
         strategy="afterInteractive"
@@ -134,21 +138,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       />
 
       {/* Header */}
-      <header className="w-full border-b border-[#ebe7df] bg-[#fcfbf9]/80 backdrop-blur-md sticky top-0 z-40">
+      <header className="w-full border-b border-[#1e293b] bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#5b7065] to-[#7d9d8c] flex items-center justify-center text-white shadow-xs">
-              <Sparkles className="w-5 h-5 text-amber-200" />
+            <ChipMindLogo size={36} glow={true} />
+            <div className="flex flex-col">
+              <span className="font-sans font-black text-lg tracking-wider bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">
+                CHIPMIND
+              </span>
+              <span className="text-[10px] font-mono text-cyan-400/70 tracking-widest hidden sm:inline">
+                NEURAL CODEX
+              </span>
             </div>
-            <span className="font-serif font-semibold text-lg tracking-tight text-[#1f2421]">
-              ChipMind
-            </span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-medium text-[#64748b]">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f5f2eb] border border-[#ebe7df]">
-              <Lock className="w-3.5 h-3.5 text-[#5b7065]" />
-              <span className="hidden sm:inline">Private Instance</span>
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#101626] border border-[#1e293b] text-cyan-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>SYSTEM SECURE</span>
             </span>
           </div>
         </div>
@@ -157,39 +164,48 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* Main Content */}
       <main className="flex-1 max-w-4xl mx-auto px-4 py-12 sm:py-16 flex flex-col items-center text-center">
         {/* Top pill badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#e8edea] text-[#2c4035] text-xs font-semibold uppercase tracking-wider mb-6 animate-fadeIn">
-          <ShieldCheck className="w-4 h-4 text-[#5b7065]" />
-          <span>Private AI Self-Reflection Companion</span>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-xs font-mono tracking-wider mb-6 animate-fadeIn shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+          <ShieldCheck className="w-4 h-4 text-cyan-400" />
+          <span>CLASSIFIED // PERSONAL COMMAND CODEX</span>
         </div>
 
         {/* Hero Title */}
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-[#1f2421] tracking-tight max-w-2xl leading-tight sm:leading-tight mb-5 animate-fadeIn">
-          A journal that listens, mirrors, and helps you untangle your mind.
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-sans font-extrabold text-white tracking-tight max-w-2xl leading-tight sm:leading-tight mb-5 animate-fadeIn">
+          Your personal AI neural journal &amp;{' '}
+          <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-purple-400 bg-clip-text text-transparent">
+            reflection engine.
+          </span>
         </h1>
 
-        <p className="text-sm sm:text-base text-[#64748b] max-w-xl leading-relaxed mb-10 animate-fadeIn">
-          ChipMind transforms passive diary entries into an active Socratic dialogue. Speak or write freely, reframe anxious narratives, and uncover emotional clarity.
+        <p className="text-sm sm:text-base text-slate-400 max-w-xl leading-relaxed mb-10 animate-fadeIn">
+          Engineered for tech minds. An active Socratic dialogue to decompile thoughts, analyze emotional patterns, and track personal growth across all your devices.
         </p>
 
         {/* Auth / Sign In Box */}
-        <div className="w-full max-w-md bg-white p-6 sm:p-8 rounded-3xl border border-[#ebe7df] shadow-sm mb-16 text-left animate-fadeIn">
+        <div className="w-full max-w-md bg-[#101626] p-6 sm:p-8 rounded-3xl border border-[#1e293b] shadow-2xl mb-16 text-left animate-fadeIn relative">
+          {/* Subtle neon corner accent */}
+          <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 rounded-tr-3xl blur-xl pointer-events-none" />
+
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-serif font-semibold text-base text-[#1f2421]">
-              Owner Access
-            </h2>
-            <span className="text-[11px] font-semibold text-[#5b7065] px-2 py-0.5 rounded-full bg-[#e8edea]">
-              Restricted
+            <div className="flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-cyan-400" />
+              <h2 className="font-sans font-bold text-base text-white">
+                Authorized Access
+              </h2>
+            </div>
+            <span className="text-[11px] font-mono font-bold text-cyan-300 px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/30">
+              LOCKED
             </span>
           </div>
 
-          <p className="text-xs text-[#64748b] mb-5 leading-relaxed">
-            This personal journal is locked down exclusively for{' '}
-            <strong className="text-[#1f2421] font-mono">{allowedEmail}</strong>.
+          <p className="text-xs text-slate-400 mb-5 leading-relaxed font-sans">
+            Encrypted personal vault designated for{' '}
+            <strong className="text-cyan-300 font-mono">{allowedEmail}</strong>.
           </p>
 
           {error && (
-            <div className="p-3 mb-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 text-xs flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
+            <div className="p-3 mb-4 rounded-2xl bg-rose-950/60 border border-rose-800 text-rose-200 text-xs flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
@@ -208,49 +224,49 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowPasswordLogin(true)}
-                  className="w-full py-3 px-4 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-2xl font-medium text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.99]"
+                  className="w-full py-3 px-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(6,182,212,0.25)] transition-all active:scale-[0.99]"
                 >
                   <Lock className="w-4 h-4" />
-                  <span>Sign In with Owner Password</span>
+                  <span>Authenticate with Access Key</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               ) : (
                 <form onSubmit={handlePasswordLogin} className="space-y-3 pt-1">
                   <div>
-                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#64748b] mb-1">
-                      Owner Secret Password
+                    <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                      Secret Password
                     </label>
                     <input
                       type="password"
                       autoFocus
                       value={ownerPassword}
                       onChange={(e) => setOwnerPassword(e.target.value)}
-                      placeholder="Enter secret owner password..."
-                      className="w-full px-3.5 py-2.5 rounded-2xl border border-[#ebe7df] focus:border-[#5b7065] focus:outline-none focus:ring-2 focus:ring-[#5b7065]/20 text-xs font-mono"
+                      placeholder="Enter access password..."
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-[#090d16] border border-[#1e293b] focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 text-xs font-mono text-white placeholder-slate-600"
                     />
                   </div>
                   <div className="flex gap-2">
                     <button
                       type="submit"
                       disabled={loading || !ownerPassword}
-                      className="flex-1 py-2.5 bg-[#5b7065] hover:bg-[#485b51] disabled:opacity-50 text-white rounded-2xl font-medium text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all"
+                      className="flex-1 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:opacity-50 text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-1.5 shadow-[0_0_12px_rgba(6,182,212,0.25)] transition-all"
                     >
                       {loading ? (
                         <>
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>Authenticating...</span>
+                          <span>Decrypting...</span>
                         </>
                       ) : (
                         <>
                           <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Unlock Journal</span>
+                          <span>Unlock Vault</span>
                         </>
                       )}
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowPasswordLogin(false)}
-                      className="px-3 py-2 text-xs text-[#64748b] hover:text-[#1f2421]"
+                      className="px-3 py-2 text-xs text-slate-400 hover:text-white"
                     >
                       Back
                     </button>
@@ -263,49 +279,49 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* Feature Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 text-left w-full max-w-4xl">
-          <div className="p-6 rounded-3xl bg-white border border-[#ebe7df] shadow-xs">
-            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mb-4">
-              <Feather className="w-5 h-5" />
+          <div className="p-6 rounded-3xl bg-[#101626] border border-[#1e293b] hover:border-cyan-500/40 transition-all group">
+            <div className="w-10 h-10 rounded-2xl bg-cyan-950 text-cyan-400 flex items-center justify-center mb-4 border border-cyan-500/30 group-hover:scale-105 transition-transform">
+              <Cpu className="w-5 h-5" />
             </div>
-            <h3 className="font-serif font-semibold text-base text-[#1f2421] mb-1.5">
-              Socratic Dialogue
+            <h3 className="font-sans font-bold text-base text-white mb-1.5">
+              Socratic Processing
             </h3>
-            <p className="text-xs text-[#64748b] leading-relaxed">
-              Instead of a blank canvas, write whatever is in your head. The AI provides empathetic validation and asks one gentle probing question at a time to help you go deeper.
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Spew raw thoughts and build logs. The AI analyzes cognitive distortions, mirrors key themes, and probes one step deeper.
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-white border border-[#ebe7df] shadow-xs">
-            <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-700 flex items-center justify-center mb-4">
+          <div className="p-6 rounded-3xl bg-[#101626] border border-[#1e293b] hover:border-purple-500/40 transition-all group">
+            <div className="w-10 h-10 rounded-2xl bg-purple-950 text-purple-400 flex items-center justify-center mb-4 border border-purple-500/30 group-hover:scale-105 transition-transform">
               <Mic className="w-5 h-5" />
             </div>
-            <h3 className="font-serif font-semibold text-base text-[#1f2421] mb-1.5">
+            <h3 className="font-sans font-bold text-base text-white mb-1.5">
               Hands-Free Dictation
             </h3>
-            <p className="text-xs text-[#64748b] leading-relaxed">
-              Tap the microphone to speak your mind effortlessly. Perfect for evening debriefs in bed or morning walk reflections on your phone.
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Real-time voice stream speech-to-text. Dump thoughts while walking, building PCs, or cooling down after a gaming session.
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-white border border-[#ebe7df] shadow-xs">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-4">
+          <div className="p-6 rounded-3xl bg-[#101626] border border-[#1e293b] hover:border-amber-500/40 transition-all group">
+            <div className="w-10 h-10 rounded-2xl bg-amber-950 text-amber-400 flex items-center justify-center mb-4 border border-amber-500/30 group-hover:scale-105 transition-transform">
               <TrendingUp className="w-5 h-5" />
             </div>
-            <h3 className="font-serif font-semibold text-base text-[#1f2421] mb-1.5">
-              Patterns & Syntheses
+            <h3 className="font-sans font-bold text-base text-white mb-1.5">
+              Telemetry &amp; Quests
             </h3>
-            <p className="text-xs text-[#64748b] leading-relaxed">
-              Visual mood trend tracking, identified emotion tags, and automated weekly synthesis reports highlighting celebrated wins and recurring cognitive patterns.
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Real-time mood telemetry, identified emotion tags, photo memories, and automated weekly syntheses celebrating personal wins.
             </p>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-[#ebe7df] py-6 text-center text-xs text-[#94a3b8]">
+      <footer className="w-full border-t border-[#1e293b] py-6 text-center text-xs font-mono text-slate-500">
         <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>ChipMind &mdash; Private AI Self-Reflection</span>
-          <span>Only for {allowedEmail}</span>
+          <span>CHIPMIND &mdash; AI CODEX v2.0</span>
+          <span className="text-cyan-400/80">AUTHENTICATED USER: {allowedEmail}</span>
         </div>
       </footer>
     </div>

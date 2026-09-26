@@ -9,7 +9,8 @@ import {
   ArrowRight,
   Loader2,
   Calendar,
-  AlertCircle
+  AlertCircle,
+  Cpu,
 } from 'lucide-react';
 import { JournalEntry, WeeklyInsight } from '@/lib/types';
 
@@ -40,7 +41,7 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
 
   const handleGenerateReview = async () => {
     if (entries.length === 0) {
-      setError('You need at least 1 journal entry to generate a weekly review.');
+      setError('You need at least 1 journal entry to generate a weekly telemetry review.');
       return;
     }
 
@@ -67,7 +68,7 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
         id: `weekly-${Date.now()}`,
         weekStartDate: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(),
         weekEndDate: new Date().toISOString(),
-        title: data.title || 'Weekly Growth Synthesis',
+        title: data.title || 'Weekly Cognitive Synthesis',
         summary: data.summary || '',
         topThemes: data.topThemes || [],
         growthAreas: data.growthAreas || [],
@@ -88,66 +89,66 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-2xl max-h-[90vh] rounded-3xl border border-[#ebe7df] shadow-xl flex flex-col overflow-hidden animate-fadeIn">
+    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-[#101626] w-full max-w-2xl max-h-[90vh] rounded-2xl border border-[#1e293b] shadow-2xl flex flex-col overflow-hidden animate-fadeIn">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#ebe7df] flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-[#1e293b] bg-[#0d1322] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 flex items-center justify-center shadow-xs">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold font-serif text-[#1f2421]">
-                Weekly AI Review & Patterns
+              <h2 className="text-sm font-semibold font-mono text-white uppercase tracking-wide">
+                Weekly AI Telemetry &amp; Pattern Analysis
               </h2>
-              <p className="text-xs text-[#64748b]">
-                ChipMind pattern recognition across your recent writing
+              <p className="text-xs text-slate-400 font-mono">
+                ChipMind neural pattern recognition across recent entries
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 text-[#94a3b8] hover:text-[#1f2421] rounded-full hover:bg-gray-100 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-[#151e34] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#101626]">
           {error && (
-            <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-200 text-xs flex items-center gap-2 font-mono">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {!activeInsight ? (
             <div className="text-center py-10 px-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#f5f2eb] text-[#5b7065] mx-auto flex items-center justify-center mb-3">
+              <div className="w-12 h-12 rounded-xl bg-[#090d16] border border-[#1e293b] text-cyan-400 mx-auto flex items-center justify-center mb-3 shadow-md">
                 <Compass className="w-6 h-6" />
               </div>
-              <h3 className="text-base font-semibold text-[#1f2421] mb-1">
-                Synthesize Your Week
+              <h3 className="text-base font-semibold text-white mb-1 font-mono">
+                Synthesize Weekly Telemetry
               </h3>
-              <p className="text-xs text-[#64748b] max-w-sm mx-auto mb-6">
-                The AI will review your past entries, identify emotional patterns, celebrate breakthroughs, and suggest an empowering focus for the week ahead.
+              <p className="text-xs text-slate-400 max-w-sm mx-auto mb-6">
+                The neural core will process your recent entries, identify behavioral loops, celebrate quest milestones, and calibrate an optimal focus for the upcoming week.
               </p>
               <button
                 onClick={handleGenerateReview}
                 disabled={isGenerating}
-                className="px-6 py-2.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full font-medium text-sm shadow-sm transition-all disabled:opacity-50 flex items-center gap-2 mx-auto"
+                className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 rounded-xl font-bold font-mono text-xs shadow-md shadow-cyan-500/20 transition-all disabled:opacity-50 flex items-center gap-2 mx-auto"
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Analyzing your reflections...</span>
+                    <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                    <span>Analyzing cognitive nodes...</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    <span>Generate Weekly Review</span>
+                    <span>Compute Weekly Synthesis</span>
                   </>
                 )}
               </button>
@@ -156,31 +157,31 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
             <div className="space-y-5">
               {/* Insight Title & Date */}
               <div>
-                <div className="flex items-center gap-2 text-xs text-[#64748b] mb-1">
-                  <Calendar className="w-3.5 h-3.5 text-[#5b7065]" />
-                  <span>Past 7 Days Reflection</span>
+                <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 mb-1">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>7-Day Diagnostic Window</span>
                 </div>
-                <h3 className="text-xl font-serif font-semibold text-[#1f2421]">
+                <h3 className="text-lg font-semibold text-white font-mono">
                   {activeInsight.title}
                 </h3>
               </div>
 
               {/* Summary narrative */}
-              <div className="p-4 rounded-2xl bg-[#fcfbf9] border border-[#ebe7df] text-xs sm:text-sm text-[#334155] leading-relaxed whitespace-pre-line">
+              <div className="p-4 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line font-sans">
                 {activeInsight.summary}
               </div>
 
-              {/* Breakthrough Wins */}
+              {/* Breakthrough Wins - WoW Legendary Amber Tier */}
               {activeInsight.wins && activeInsight.wins.length > 0 && (
-                <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/70">
-                  <div className="flex items-center gap-2 text-amber-900 font-semibold text-xs uppercase tracking-wider mb-2">
-                    <Trophy className="w-4 h-4 text-amber-600" />
-                    <span>Celebrated Wins & Progress</span>
+                <div className="p-4 rounded-xl bg-amber-950/30 border border-amber-500/40 shadow-sm shadow-amber-950/30">
+                  <div className="flex items-center gap-2 text-amber-300 font-semibold font-mono text-xs uppercase tracking-wider mb-2">
+                    <Trophy className="w-4 h-4 text-amber-400" />
+                    <span>Legendary Breakthroughs &amp; Trophies</span>
                   </div>
-                  <ul className="space-y-1.5">
+                  <ul className="space-y-1.5 font-sans">
                     {activeInsight.wins.map((win, idx) => (
-                      <li key={idx} className="text-xs text-amber-950 flex items-start gap-2">
-                        <span className="text-amber-600 font-bold">•</span>
+                      <li key={idx} className="text-xs text-amber-100 flex items-start gap-2">
+                        <span className="text-amber-400 font-bold">•</span>
                         <span>{win}</span>
                       </li>
                     ))}
@@ -188,13 +189,14 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
                 </div>
               )}
 
-              {/* Key Mindset Shift */}
+              {/* Key Mindset Shift - WoW Epic Nether Purple Tier */}
               {activeInsight.keyMindsetShift && (
-                <div className="p-4 rounded-2xl bg-[#e8edea]/70 border border-[#5b7065]/20">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-[#2c4035] mb-1">
-                    Key Mindset Shift
+                <div className="p-4 rounded-xl bg-purple-950/30 border border-purple-500/40 shadow-sm shadow-purple-950/30">
+                  <div className="text-xs font-mono font-semibold uppercase tracking-wider text-purple-300 mb-1 flex items-center gap-1.5">
+                    <Cpu className="w-3.5 h-3.5 text-purple-400" />
+                    <span>Epic Mindset Calibration</span>
                   </div>
-                  <p className="text-xs sm:text-sm text-[#2c4035] italic">
+                  <p className="text-xs sm:text-sm text-purple-100 italic font-mono">
                     &ldquo;{activeInsight.keyMindsetShift}&rdquo;
                   </p>
                 </div>
@@ -203,15 +205,15 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
               {/* Top Themes & Growth Areas */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {activeInsight.topThemes?.length > 0 && (
-                  <div className="p-3.5 rounded-2xl bg-white border border-[#ebe7df]">
-                    <div className="text-[11px] font-semibold uppercase tracking-wider text-[#64748b] mb-1.5">
-                      Top Themes
+                  <div className="p-3.5 rounded-xl bg-[#090d16] border border-[#1e293b]">
+                    <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                      Telemetry Nodes
                     </div>
                     <div className="flex flex-wrap gap-1">
                       {activeInsight.topThemes.map((t, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 rounded-full text-[11px] bg-[#f5f2eb] text-[#1f2421]"
+                          className="px-2 py-0.5 rounded-md text-[11px] font-mono bg-cyan-950/50 text-cyan-300 border border-cyan-500/30"
                         >
                           #{t}
                         </span>
@@ -221,13 +223,13 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
                 )}
 
                 {activeInsight.growthAreas?.length > 0 && (
-                  <div className="p-3.5 rounded-2xl bg-white border border-[#ebe7df]">
-                    <div className="text-[11px] font-semibold uppercase tracking-wider text-[#64748b] mb-1.5">
+                  <div className="p-3.5 rounded-xl bg-[#090d16] border border-[#1e293b]">
+                    <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
                       Patterns To Watch
                     </div>
                     <div className="space-y-1">
                       {activeInsight.growthAreas.map((g, idx) => (
-                        <div key={idx} className="text-xs text-[#475569] leading-tight">
+                        <div key={idx} className="text-xs text-slate-300 leading-tight">
                           • {g}
                         </div>
                       ))}
@@ -236,14 +238,14 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
                 )}
               </div>
 
-              {/* Recommended Focus for Next Week */}
+              {/* Recommended Focus for Next Week - Arcane Mana Cyan Tier */}
               {activeInsight.recommendedFocus && (
-                <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-200/70">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-blue-900 mb-1 flex items-center gap-1.5">
-                    <ArrowRight className="w-3.5 h-3.5 text-blue-700" />
-                    <span>Recommended Focus For Next Week</span>
+                <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/40 shadow-sm shadow-cyan-950/30">
+                  <div className="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-300 mb-1 flex items-center gap-1.5">
+                    <ArrowRight className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Primary Quest Objective For Next Week</span>
                   </div>
-                  <p className="text-xs sm:text-sm text-blue-950 font-medium">
+                  <p className="text-xs sm:text-sm text-cyan-100 font-medium">
                     {activeInsight.recommendedFocus}
                   </p>
                 </div>
@@ -254,14 +256,14 @@ export const WeeklyReviewModal: React.FC<WeeklyReviewModalProps> = ({
                 <button
                   onClick={handleGenerateReview}
                   disabled={isGenerating}
-                  className="text-xs text-[#5b7065] hover:text-[#485b51] font-medium flex items-center gap-1.5"
+                  className="text-xs font-mono text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1.5 transition-colors"
                 >
                   {isGenerating ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
                     <Sparkles className="w-3.5 h-3.5" />
                   )}
-                  <span>Re-generate with latest entries</span>
+                  <span>Re-compute telemetry with latest data</span>
                 </button>
               </div>
             </div>

@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { BookOpen, Sparkles, TrendingUp, Settings, Plus, Lock, LogOut } from 'lucide-react';
+import { BookOpen, TrendingUp, Settings, Plus, Lock, LogOut } from 'lucide-react';
+import { ChipMindLogo } from './ChipMindLogo';
 
 interface NavbarProps {
   activeTab: 'journal' | 'insights' | 'new';
@@ -25,40 +26,41 @@ export const Navbar: React.FC<NavbarProps> = ({
   entryCount,
 }) => {
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#fcfbf9]/90 border-b border-[#ebe7df]">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#090d16]/90 border-b border-[#1e293b]">
       <div className="max-w-4xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
         {/* Brand / Logo */}
-        <div 
+        <div
           onClick={() => setActiveTab('journal')}
-          className="flex items-center gap-2 cursor-pointer group shrink-0"
+          className="flex items-center gap-2.5 cursor-pointer group shrink-0"
         >
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-tr from-[#5b7065] to-[#7d9d8c] flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105">
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200" />
-          </div>
-          <div>
-            <span className="font-serif font-semibold text-base sm:text-lg tracking-tight text-[#1f2421]">
-              ChipMind
-            </span>
-            <span className="text-xs text-[#64748b] ml-1.5 font-sans font-medium hidden md:inline-block">
-              Self-Reflection
-            </span>
+          <ChipMindLogo size={36} glow={true} className="transition-transform group-hover:scale-105" />
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <span className="font-sans font-black text-base sm:text-lg tracking-wider bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">
+                CHIPMIND
+              </span>
+            </div>
+            <div className="flex items-center gap-1 text-[10px] font-mono text-cyan-400/80 tracking-widest hidden sm:flex">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>CORE ONLINE</span>
+            </div>
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 sm:gap-2">
+        <nav className="flex items-center gap-1.5 sm:gap-2">
           <button
             onClick={() => setActiveTab('journal')}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
               activeTab === 'journal'
-                ? 'bg-[#e8edea] text-[#2c4035]'
-                : 'text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb]'
+                ? 'bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)]'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-850 border border-transparent'
             }`}
           >
-            <BookOpen className="w-4 h-4 shrink-0" />
+            <BookOpen className="w-3.5 h-3.5 shrink-0" />
             <span>Journal</span>
             {entryCount > 0 && (
-              <span className="text-[10px] sm:text-xs px-1.5 py-0.2 rounded-full bg-[#5b7065]/15 text-[#2c4035] font-semibold">
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30">
                 {entryCount}
               </span>
             )}
@@ -66,25 +68,25 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('insights')}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
               activeTab === 'insights'
-                ? 'bg-[#e8edea] text-[#2c4035]'
-                : 'text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb]'
+                ? 'bg-purple-950/60 text-purple-300 border border-purple-500/40 shadow-[0_0_12px_rgba(168,85,247,0.2)]'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-850 border border-transparent'
             }`}
           >
-            <TrendingUp className="w-4 h-4 shrink-0" />
-            <span>Insights</span>
+            <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+            <span>Telemetry</span>
           </button>
         </nav>
 
         {/* Right Action buttons */}
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {activeTab !== 'new' && (
             <button
               onClick={() => setActiveTab('new')}
-              className="flex items-center gap-1 px-2.5 sm:px-3.5 py-1.5 bg-[#5b7065] hover:bg-[#485b51] text-white rounded-full text-xs sm:text-sm font-medium shadow-sm transition-all hover:shadow active:scale-95"
+              className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-full text-xs sm:text-sm shadow-[0_0_14px_rgba(6,182,212,0.35)] transition-all hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] active:scale-95"
             >
-              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>Reflect</span>
             </button>
           )}
@@ -93,7 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onLockApp}
               title="Lock Journal"
-              className="p-1.5 sm:p-2 text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb] rounded-full transition-colors"
+              className="p-1.5 sm:p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-800/60 rounded-full transition-colors border border-transparent hover:border-slate-700"
             >
               <Lock className="w-4 h-4" />
             </button>
@@ -102,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onOpenSettings}
             title="Settings"
-            className="p-1.5 sm:p-2 text-[#64748b] hover:text-[#1f2421] hover:bg-[#f5f2eb] rounded-full transition-colors"
+            className="p-1.5 sm:p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-800/60 rounded-full transition-colors border border-transparent hover:border-slate-700"
           >
             <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
@@ -111,7 +113,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onLogout}
               title={`Sign Out (${userEmail || 'everythingfunny@gmail.com'})`}
-              className="p-1.5 sm:p-2 text-[#94a3b8] hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors"
+              className="p-1.5 sm:p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-950/40 rounded-full transition-colors border border-transparent hover:border-rose-900/50"
             >
               <LogOut className="w-4 h-4" />
             </button>
