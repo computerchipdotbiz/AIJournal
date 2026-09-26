@@ -14,6 +14,9 @@ export const setRuntimeSupabaseConfig = (url: string, key: string) => {
   }
 };
 
+export const DEFAULT_SUPABASE_URL = 'https://spuwsjddirucwwbywlvh.supabase.co';
+export const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_TU7l-xgHZuCU_UsgLTG0Wg_0t6PFJ5z';
+
 export const getSupabaseConfig = (): { url: string; key: string } => {
   if (runtimeUrl && runtimeKey) {
     return { url: runtimeUrl, key: runtimeKey };
@@ -48,7 +51,7 @@ export const getSupabaseConfig = (): { url: string; key: string } => {
     }
   }
 
-  return { url: '', key: '' };
+  return { url: DEFAULT_SUPABASE_URL, key: DEFAULT_SUPABASE_ANON_KEY };
 };
 
 export const isSupabaseConfigured = (): boolean => {
